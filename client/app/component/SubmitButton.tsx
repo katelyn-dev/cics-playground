@@ -7,6 +7,7 @@ import { useFormStatus } from "react-dom";
 type ButtonElement = ElementRef<typeof Button>;
 type ButtonProps = ComponentProps<typeof Button>;
 
+// eslint-disable-next-line react/display-name
 export const SubmitButton = forwardRef<ButtonElement, ButtonProps>(
   (props, ref) => {
     const { pending } = useFormStatus();

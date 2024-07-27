@@ -1,2 +1,3 @@
-
+.idea/
+client/package-lock.json
 server/client_secrets.json

@@ -1,0 +1,30 @@
+/* Header.module.css */
+.header {
+    background: #333;
+    color: white;
+    padding: 1rem;
+}
+
+.navList {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.navItem {
+    display: flex;
+}
+
+.navLink {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s;
+}
+
+.navLink:hover {
+    background-color: #444;
+}

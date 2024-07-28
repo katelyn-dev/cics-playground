@@ -1,25 +1,38 @@
-.background {
-    background-color: #0070f3;
+.backgroundColor {
+    background-color: #d7f2d2;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+.darkBackgroundColor {
+    background-color: #79a272;
+    width: 100%;
+    min-height: 50vh;
+    top: 0;
+    position: absolute;
+}
+
 .container {
-    min-width: 600px;
+    min-width: 500px;
     margin: 0 auto;
     padding: 1rem;
+    margin-top: 150px;
     background-color: white;
-
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    z-index: 0;
 }
 
 .formHeader {
     text-align: center;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+
 }
 
 .form {
@@ -56,4 +69,18 @@
 .textarea {
     min-height: 100px;
     resize: vertical;
+}
+
+
+.select {
+    margin-right: 1rem;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
 }

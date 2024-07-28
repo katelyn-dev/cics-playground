@@ -32,7 +32,7 @@ const Form: React.FC = () => {
   const renderForm = () => {
     return (
       <div className={styles.backgroundColor}>
-        <v className={styles.darkBackgroundColor}/>
+        <div className={styles.darkBackgroundColor}/>
         <div className={styles.container}>
           <h1 className={styles.formHeader}>Questionnaire Form</h1>
           <form className={styles.form} onSubmit={handleSubmit}>

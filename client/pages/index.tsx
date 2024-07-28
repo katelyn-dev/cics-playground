@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import Header from './component/Header';
+import Header from '../components/Header';
 
 
-const Page = () => {
+const Index = () => {
   const init = useRef(0);
   const [isAuth, setIsAuth] = useState(false);
   const [authUrl, setAuthUrl] = useState();
@@ -59,4 +59,4 @@ const Page = () => {
   )
 }
 
-export default Page
+export default Index

@@ -14,7 +14,7 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li className={styles.navItem}>
-              <Link href="/Form" legacyBehavior>
+              <Link href="/form" legacyBehavior>
                 <a className={styles.navLink}>Form</a>
               </Link>
             </li>

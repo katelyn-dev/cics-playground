@@ -1,5 +1,6 @@
 Flask==3.0.3
 Flask_Cors==4.0.1
+flask_marshmallow==1.2.1
 flask_sqlalchemy==3.1.1
 Requests==2.32.3
 SQLAlchemy==2.0.31

@@ -1,18 +1,20 @@
 from flask import Flask, jsonify, redirect, url_for, render_template, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from app.config import Config
 
 
 db = SQLAlchemy()
-
+ma = Marshmallow() # for serialization
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    
-    # Initialize SQLAlchemy with the app
+    app.json.ensure_ascii = False  # convert unicode to chinese
+
     db.init_app(app)
+    ma.init_app(app)
     
     with app.app_context():
         # Import routes here to avoid circular imports

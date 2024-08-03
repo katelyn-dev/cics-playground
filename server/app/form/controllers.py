@@ -1,6 +1,8 @@
 from flask import Blueprint, Flask, request, jsonify, make_response
 from .models import Form, form_schema, forms_schema
 from app import db, ma
+from app.email.EmailController import EmailController
+from app.config import Config
 
 mod = Blueprint('form', __name__)
 
@@ -18,13 +20,20 @@ def create_form():
 
 @mod.route("/submitForm", methods=['POST'])
 def submit_form():
-  return "Hello World"
+  return "Form submited"
 
-@mod.route("/emailNotification")
+@mod.route("/emailNotification", methods=["POST"])
 def email_notification():
-  return "email notification"
+  data = request.get_json()
+  if not isinstance(data, dict):
+    return jsonify({"error": "Invalid data format, expected a dictionary"}), 400
+  
+  email_controller = EmailController(Config.EMAILJS_SERVICE_ID, Config.EMAILJS_USERID, Config.EMAILJS_FROM_NAME, Config.EMAILJS_ACCESS_TOKEN, Config.EMAILJS_TEMPLATE_ID)
+  email_controller.send_email(data.get('toEmail'),data.get('toName'),data.get('registrationDetail'), data.get('registrationFee'), data.get('paymentLink'))
 
-@mod.route("/getForm")
+  return "Email sent"
+
+@mod.route("/getForm", methods=["GET"])
 def get_all_form():
   if "id" in request.args:
     form_id = request.args['id']

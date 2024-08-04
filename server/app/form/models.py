@@ -9,7 +9,7 @@ class Form(db.Model):
     created_by = db.Column(db.String(255))
     last_updated_by = db.Column(db.String(255))
     start_time = db.Column(db.DateTime)
-    last_modified_time = db.Column(db.DateTime, onupdate=db.func.now())
+    last_modified_time = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     def create_form(self, data):
         # Create a new Form instance

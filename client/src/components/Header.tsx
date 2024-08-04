@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({children}) => {
           </li>
           <li className={styles.navItem}>
             <NavLink to="/form-creator" className={styles.navLink}>
-              Form
+              Form Creator
             </NavLink>
           </li>
           {/* Add more links as needed */}

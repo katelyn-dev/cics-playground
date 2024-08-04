@@ -5,10 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {QueryClient, QueryClientProvider} from "react-query";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
 
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found");
+}
+
+const root = ReactDOM.createRoot(rootElement);
 const queryClient = new QueryClient();
 
 root.render(

@@ -29,7 +29,11 @@ export const getCreatedFormJson = async (): Promise<Object> => {
         }, {
           "name": "email",
           "type": "text",
-          "title": "E-mail address",
+          "title": {
+            default: "E-mail address",
+            "zh-cn": "电子邮件地址",
+            "zh-tw": "電子郵件地址"
+          },
           "inputType": "email",
           "placeholder": "foobar@example.com",
           "isRequired": true,
@@ -72,3 +76,31 @@ export const getCreatedFormJson = async (): Promise<Object> => {
     //throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
   }
 };
+
+
+export const translateText = async (text: string, targetLanguage: string): Promise<string> => {
+  console.log(`text: ${text}`)
+  console.log(`targetLanguage: ${targetLanguage}`)
+  const GOOGLE_TRANSLATE_API_URL = 'https://translation.googleapis.com/language/translate/v2';
+  const API_KEY = 'AIzaSyDimA-L7Yqsc2W_nX5afvuRihqX3BPVpsk';
+  try {
+    const response = await axios.post(
+      `${GOOGLE_TRANSLATE_API_URL}`,
+      {
+        q: text,
+        target: targetLanguage,
+        format: 'text',
+      },
+      {
+        params: {
+          key: API_KEY,
+        },
+      }
+    );
+
+    const translatedText = response.data.data.translations[0].translatedText;
+    return translatedText;
+  } catch (error) {
+    return `TRANSLATION ERROR: ${error instanceof Error ? error.message : 'An unknown error occurred'}`;
+  }
+}

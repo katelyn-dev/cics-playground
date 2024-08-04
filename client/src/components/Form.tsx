@@ -1,9 +1,20 @@
-"use client";
-
 import React, {ChangeEvent, FormEvent, useEffect, useRef, useState} from 'react';
 import styles from "../styles/Form.module.css";
-import { SubmitButton } from './SubmitButton';
+import SubmitButton from "./SubmitButton";
+import {Survey} from "survey-react-ui";
+import {Model} from "survey-core";
 
+const surveyJson = {
+  elements: [{
+    name: "FirstName",
+    title: "Enter your first name:",
+    type: "text"
+  }, {
+    name: "LastName",
+    title: "Enter your last name:",
+    type: "text"
+  }]
+};
 
 const Form: React.FC = () => {
   const [formData, setFormData] = useState<any[]>([
@@ -29,6 +40,9 @@ const Form: React.FC = () => {
     // Handle form submission (e.g., send data to an API)
   };
 
+  const survey = new Model(surveyJson);
+
+  <Survey model={survey}/>
   const renderForm = () => {
     return (
       <div className={styles.backgroundColor}>
@@ -38,7 +52,7 @@ const Form: React.FC = () => {
           <form className={styles.form} onSubmit={handleSubmit}>
 
             {
-              formData.map((row, rowIndex) => {
+              formData.map((row , rowIndex) => {
                 const [questionType, questionTitle, ...options] = row;
                 if (!questionType || !questionTitle) return null;
 
@@ -61,7 +75,7 @@ const Form: React.FC = () => {
                   return (
                     <div className={styles.formGroup} key={rowIndex}>
                       <label className={styles.label}>{questionTitle}</label>
-                      {options.map((option, optionIndex) => (
+                      {options.map((option: string, optionIndex: number) => (
                         <div key={optionIndex}>
                           <input className={styles.select} type="radio" name={questionTitle} value={option} />
                           <label>{option}</label>
@@ -73,7 +87,7 @@ const Form: React.FC = () => {
                   return (
                     <div className={styles.formGroup} key={rowIndex}>
                       <label className={styles.label}>{questionTitle}</label>
-                      {options.map((option, optionIndex) => (
+                      {options.map((option: string, optionIndex: number) => (
                         <div key={optionIndex}>
                           <input className={styles.select} type="checkbox" name={questionTitle} value={option} />
                           <label>{option}</label>
@@ -86,7 +100,7 @@ const Form: React.FC = () => {
                     <div className={styles.formGroup} key={rowIndex}>
                       <label className={styles.label}>{questionTitle}</label>
                       <select className={styles.dropdown} name={questionTitle}>
-                        {options.map((option, optionIndex) => (
+                        {options.map((option: string, optionIndex: number) => (
                           <option key={optionIndex} value={option}>
                             {option}
                           </option>

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, Loading } from "@lemonsqueezy/wedges";
 import { type ComponentProps, type ElementRef, forwardRef, useState, useEffect } from "react";
 import styles from "../styles/SubmitButton.module.css";

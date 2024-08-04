@@ -13,11 +13,27 @@ const SurveyCreatorRenderComponent: React.FC = () => {
   const creatorRef = useRef<SurveyCreator | null>(null);
   const { data, error, isLoading } = useQuery<Object,Error>({queryKey: ['getCreatedFormJson'], queryFn: getCreatedFormJson});
 
+  // Function to download JSON as a file
+  const downloadJsonFile = (json: any, filename: string) => {
+    const jsonString = JSON.stringify(json, null, 2); // Pretty-print JSON
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    // Clean up the URL object
+    URL.revokeObjectURL(url);
+  };
 
   const translateSurveyJSON = async(json: any, targetLocale: string): Promise<JSON> => {
     if(!json) return {} as JSON;
 
     const translatedJSON = { ...json };
+    if(typeof translatedJSON.title === 'string') translatedJSON.title = { default: translatedJSON.title }
+    if(typeof translatedJSON.description === 'string') translatedJSON.description = { default: translatedJSON.description }
 
     translatedJSON.title[targetLocale] = await translateText(json.title?.default ?? json.title, targetLocale);
     translatedJSON.description[targetLocale] = await translateText(json.description?.default ?? json.description, targetLocale);
@@ -27,35 +43,74 @@ const SurveyCreatorRenderComponent: React.FC = () => {
 
     translatedJSON.pages = await Promise.all(json.pages.map(async(page: any) => ({
       ...page,
-      elements: await Promise.all(page.elements.map(async(element: any) => ({
-        ...element,
-        title: {
-          ...element.title,
-          [targetLocale]: await translateText(element.title?.default ?? element.title, targetLocale),
-        },
-        description: {
-          ...element?.description,
-          [targetLocale]: await translateText(element?.description?.default ?? element?.description, targetLocale),
-        },
-        minRateDescription: element.minRateDescription
-          ? {
-            ...element.minRateDescription,
-            [targetLocale]: await translateText(
-              element.minRateDescription.default ?? element.minRateDescription,
-              targetLocale
-            ),
-          }
-          : undefined,
-        maxRateDescription: element.maxRateDescription
-          ? {
-            ...element.maxRateDescription,
-            [targetLocale]: await translateText(
-              element.maxRateDescription.default ?? element.maxRateDescription,
-              targetLocale
-            ),
-          }
-          : undefined,
-      }))),
+      elements: await Promise.all(page.elements.map(async(element: any) => {
+        // Determine the title structure
+        const title =
+          element.title && element.title.default !== undefined
+            ? {
+              ...element.title,
+              [targetLocale]: await translateText(element.title.default, targetLocale),
+            }
+            : {
+              default: element.title,
+              [targetLocale]: await translateText(element.title, targetLocale),
+            };
+
+        // Handle other optional fields similarly
+        const description =
+          element.description && element.description.default !== undefined
+            ? {
+              ...element.description,
+              [targetLocale]: await translateText(element.description.default, targetLocale),
+            }
+            : element.description
+              ? {
+                default: element.description,
+                [targetLocale]: await translateText(element.description, targetLocale),
+              }
+              : undefined;
+
+        const minRateDescription =
+          element.minRateDescription && element.minRateDescription.default !== undefined
+            ? {
+              ...element.minRateDescription,
+              [targetLocale]: await translateText(
+                element.minRateDescription.default,
+                targetLocale
+              ),
+            }
+            : element.minRateDescription
+              ? {
+                default: element.minRateDescription,
+                [targetLocale]: await translateText(element.minRateDescription, targetLocale),
+              }
+              : undefined;
+
+        const maxRateDescription =
+          element.maxRateDescription && element.maxRateDescription.default !== undefined
+            ? {
+              ...element.maxRateDescription,
+              [targetLocale]: await translateText(
+                element.maxRateDescription.default,
+                targetLocale
+              ),
+            }
+            : element.maxRateDescription
+              ? {
+                default: element.maxRateDescription,
+                [targetLocale]: await translateText(element.maxRateDescription, targetLocale),
+              }
+              : undefined;
+
+        return {
+          ...element,
+          title,
+          description,
+          minRateDescription,
+          maxRateDescription,
+        };
+      })
+      ),
     })));
 
     return translatedJSON;
@@ -71,6 +126,9 @@ const SurveyCreatorRenderComponent: React.FC = () => {
       const chineseResult = await translateSurveyJSON(currentJson, 'zh-cn')
       const result = await translateSurveyJSON(chineseResult, 'zh-tw')
       creatorRef.current.JSON = result;
+      // Download the translated JSON as a file
+      downloadJsonFile(result, "translated-survey.json");
+
       alert(JSON.stringify(result))
     }
   })

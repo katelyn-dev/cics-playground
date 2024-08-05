@@ -1,0 +1,257 @@
+/* Ensure that all elements are centered and aligned properly */
+.timeSlotsContainer {
+  display: flex;
+  flex-direction: column; /* Arrange time slots vertically */
+  gap: 10px; /* Space between each time slot */
+}
+
+.timeSlotWrapper {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  gap: 10px; /* Space between time slot picker and buttons */
+}
+
+.addTimeSlotButton,
+.removeTimeSlotButton {
+  background-color: #4CAF50; /* Green for add button */
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* Larger font size for symbols */
+  margin: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
+.removeTimeSlotButton {
+  background-color: #f44336; /* Red for remove button */
+}
+
+.addTimeSlotButton {
+  background-color: #4CAF50; /* Green for add button */
+}
+
+
+.subclassContainer {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.subclassContainer .formGroup {
+  margin-bottom: 15px;
+}
+
+.subclassContainer .removeSubclassButton,
+.addSubclassButton {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #4CAF50; /* Green for add button */
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* Larger font size for symbols */
+  margin: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
+.subclassContainer .removeSubclassButton {
+  background-color: red;
+  color: white;
+}
+
+.addSubclassButton {
+  background-color: green;
+  color: white;
+}
+
+.warning {
+  color: rgb(0, 195, 255);           /* Sets the text color to red */
+  font-size: 12px;      /* Adjusts the font size to be smaller */
+  margin-top: 4px;      /* Adds a small margin above the error message */
+}
+
+.error {
+  color: red;           /* Sets the text color to red */
+  font-size: 12px;      /* Adjusts the font size to be smaller */
+  margin-top: 4px;      /* Adds a small margin above the error message */
+}
+
+.toggleSwitchLabel {
+  display: block;
+  margin-bottom: 0.0rem;
+  font-weight: bold;
+}
+
+
+.toggleSwitchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adjust spacing between toggle and label as needed */
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+
+.toggleSwitchCheckbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSwitchSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.toggleSwitchSlider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+.toggleSwitchCheckbox:checked + .toggleSwitchSlider {
+  background-color: #f36421;
+}
+
+.toggleSwitchCheckbox:checked + .toggleSwitchSlider:before {
+  transform: translateX(16px);
+}
+
+.backgroundColor {
+  background-color: #d7f2d2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.darkBackgroundColor {
+  background-color: #79a272;
+  width: 100%;
+  min-height: 50vh;
+  top: 0;
+  position: absolute;
+}
+
+.container {
+  min-width: 600px; /* Adjust the width to accommodate both sections */
+  margin: 0 auto;
+  padding: 1rem;
+  margin-top: 150px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 0;
+  display: flex;
+  gap: 20px; /* Space between the left and right sections */
+  justify-content: space-between;
+}
+
+.leftSection,
+.rightSection {
+  flex: 1; /* Each section takes up an equal amount of space */
+  min-width: 600px;
+}
+
+
+.formHeader {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.indexSpan {
+  width: 40px; /* Adjust width as needed to fit your layout */
+  font-weight: bold;
+  margin-right: 10px; /* Space between span and label */
+  text-align: left; /* Align text to the left */
+}
+
+
+.input,
+.textarea {
+  width: 95%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #0070f3;
+  outline: none;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+
+.select {
+  margin-right: 1rem;
+}
+
+.dropdown {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}

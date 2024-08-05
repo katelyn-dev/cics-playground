@@ -37,7 +37,7 @@ export const SubmitButton = forwardRef<ButtonElement, ButtonProps>(
 
     return (
       <Button
-        className={styles.submitButton}
+        className={!props.disabled ? styles.submitButton : styles.submitButtonDisabled}
         {...props}
         before={before}
         ref={ref}

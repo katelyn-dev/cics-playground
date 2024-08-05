@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({children}) => {
         <ul className={styles.navList}>
           <li className={styles.navItem}>
             <NavLink to="/" className={styles.navLink}>
-              Home
+              Programme
             </NavLink>
           </li>
           <li className={styles.navItem}>

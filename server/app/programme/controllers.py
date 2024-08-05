@@ -17,9 +17,9 @@ def getAll():
         programme_id = request.args['id']
         print(programme_id)
 
-        programme = Programme.query.filter_by(id=programme_id).first()
-        if programme:
-            return make_response(programme_schema.dump(programme), 200)
+        programmes = Programme.query.filter_by(class_group_id=programme_id).all()
+        if programmes:
+            return make_response(programmes_schema.dump(programmes), 200)
         return make_response(jsonify({'message': 'programme not found'}), 404)
 
     programmes = Programme.query.all()
@@ -33,6 +33,7 @@ def getAll():
 """
 @mod.route('/searchProgramme', methods=['GET'])
 def searchProgramme():
+    programme_id = request.args.get('id')
     start_date_str = request.args.get('startDate')
     end_date_str = request.args.get('endDate')
 
@@ -46,8 +47,9 @@ def searchProgramme():
         
         # Query the database for forms within the specified date range
         programmes = Programme.query.filter(
+            Programme.class_group_id == programme_id, 
             Programme.class_start >= start_date,
-            Programme.class_start <= end_date
+            Programme.class_end <= end_date
         ).all()
         
         if programmes:
@@ -98,7 +100,6 @@ def saveProgramme():
         return make_response(jsonify({'message': "Missing class_start / class_end"}), 400)
 
     try:
-        # Handle user-defined date and datetime
         class_start = datetime.strptime(class_start, '%Y-%m-%d').date()
         class_end = datetime.strptime(class_end, '%Y-%m-%d').date()
         if start_time:
@@ -109,15 +110,15 @@ def saveProgramme():
     if 'extra_attributes' in data and not isinstance(data['extra_attributes'], dict):
         return make_response(jsonify({"error": "Invalid extra_attibutes, expected a dictionary"}), 400)
   
-    new_programme = Programme(class_group_id=data['class_group_id'], 
-                         class_name_eng=data['class_name_eng'],
-                         class_name_zhcn=data['class_name_zhcn'],
-                         class_name_zhhk=data['class_name_zhhk'],
-                         has_subclass = data['has_subclass'],
-                         subclass_group_id = data['subclass_group_id'],
-                         has_extra_attributes = data['has_extra_attributes'],
-                         extra_attributes_name = data['extra_attributes_name'],
-                         extra_attributes = data['extra_attributes'],
+    new_programme = Programme(class_group_id=data.get('class_group_id'), 
+                         class_name_eng=data.get('class_name_eng'),
+                         class_name_zhcn=data.get('class_name_zhcn'),
+                         class_name_zhhk=data.get('class_name_zhhk'),
+                         has_subclass = data.get('has_subclass'),
+                         subclass_group_id = data.get('subclass_group_id'),
+                         has_extra_attributes = data.get('has_extra_attributes'),
+                         extra_attributes_name = data.get('extra_attributes_name'),
+                         extra_attributes = data.get('extra_attributes'),
                          class_start=class_start,
                          class_end=class_end,
                          start_time=start_time

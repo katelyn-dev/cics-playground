@@ -16,11 +16,16 @@ const SurveyForm: React.FC = () => {
     if(isLoading || !data) return;
 
     const survey = new Model(data);
+    survey.locale = "zh-cn";
+    survey.language = "zh-cn";
+
     survey.onComplete.add((sender, options) => {
       console.log(JSON.stringify(sender.data, null, 3));
     });
   }, []);
   const survey = new Model(data);
+  survey.locale = "zh-cn";
+  survey.language = "zh-cn";
   survey.onComplete.add((sender, options) => {
     console.log(JSON.stringify(sender.data, null, 3));
   });

@@ -8,49 +8,89 @@ export const getCreatedFormJson = async (): Promise<Object> => {
   } catch (error) {
     console.log(`error`)
     return {
-      title: "Product Feedback Survey",
-      description: "Please take a few minutes to give us feedback about our product.",
-      pages:[{
-        "elements": [{
-          "name": "username",
-          "type": "text",
-          "title": "Username",
-          "maxLength": 25
-        }, {
-          "name": "email",
-          "type": "text",
-          "title": "E-mail address",
-          "inputType": "email",
-          "placeholder": "foobar@example.com",
-          "isRequired": true,
-          "autocomplete": "email"
-        }, {
-          "name": "password",
-          "type": "text",
-          "title": "Password",
-          "description": "Enter 8 characters minimum.",
-          "inputType": "password",
-          "isRequired": true,
-          "autocomplete": "password",
-          "validators": [{
-            "type": "text",
-            "minLength": 8,
-            "text": "Your password must be at least 8 characters long."
-          }]
-        }, {
-          "name": "url",
-          "type": "text",
-          "title": "URL",
-          "inputType": "url",
-          "placeholder": "https://www.example.com",
-          "validators": [{
-            "type": "regex",
-            "regex": "https://.*",
-            "text": "Your answer must match the URL pattern."
-          }]
-        }],
-        "showQuestionNumbers": false
-      }]}
+      "title": {
+        "default": "Product Feedback Survey",
+        "zh-cn": "产品反馈调查",
+        "zh-tw": "產品回饋調查"
+      },
+      "description": {
+        "default": "Please take a few minutes to give us feedback about our product.",
+        "zh-cn": "请花几分钟时间向我们提供有关我们产品的反馈。",
+        "zh-tw": "請花幾分鐘時間向我們提供有關我們產品的回饋。"
+      },
+      "pages": [
+        {
+          "name": "page1",
+          "elements": [
+            {
+              "type": "text",
+              "name": "username",
+              "title": {
+                "default": "Username",
+                "zh-cn": "用户名",
+                "zh-tw": "使用者名稱"
+              },
+              "maxLength": 25
+            },
+            {
+              "type": "text",
+              "name": "email",
+              "title": {
+                "default": "E-mail address",
+                "zh-cn": "电子邮件地址",
+                "zh-tw": "電子郵件地址"
+              },
+              "isRequired": true,
+              "inputType": "email",
+              "autocomplete": "email",
+              "placeholder": "foobar@example.com"
+            },
+            {
+              "type": "text",
+              "name": "password",
+              "title": {
+                "default": "Password",
+                "zh-cn": "密码",
+                "zh-tw": "密碼"
+              },
+              "description": {
+                "default": "Enter 8 characters minimum.",
+                "zh-cn": "至少输入 8 个字符。",
+                "zh-tw": "至少輸入 8 個字元。"
+              },
+              "isRequired": true,
+              "validators": [
+                {
+                  "type": "text",
+                  "text": "Your password must be at least 8 characters long.",
+                  "minLength": 8
+                }
+              ],
+              "inputType": "password",
+              "autocomplete": "password"
+            },
+            {
+              "type": "text",
+              "name": "url",
+              "title": {
+                "default": "URL",
+                "zh-cn": "网址",
+                "zh-tw": "網址"
+              },
+              "validators": [
+                {
+                  "type": "regex",
+                  "text": "Your answer must match the URL pattern.",
+                  "regex": "https://.*"
+                }
+              ],
+              "inputType": "url",
+              "placeholder": "https://www.example.com"
+            }
+          ]
+        }
+      ]
+    }
     //throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
   }
 };

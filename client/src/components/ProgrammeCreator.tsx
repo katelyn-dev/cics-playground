@@ -3,6 +3,10 @@ import styles from "../styles/Programme.module.css";
 import SubmitButton from "./SubmitButton";
 import TimeRangePicker from './TimeRangePicker';
 import onlineCourse from '../static/image/online-course.png';
+import axios from 'axios';
+import { toClassesPayload } from './PaylaodMapper';
+import { Helper } from './Helper';
+import Popup from './Popup';
 
 interface TimeSlot {
   startTime: string;
@@ -15,31 +19,43 @@ interface SubClass {
   zhcnClassName: string;
 }
 
-interface ProgrammeData {
+enum TargetAudience {
+  junior = "junior",
+  teens = "teens",
+  adult = "adult",
+  senior = "senior",
+}
+
+export interface ProgrammeData {
   engClassName: string;
   zhhkClassName: string;
   zhcnClassName: string;
+  targetAudience: TargetAudience | undefined;
   startDate: string;
   endDate: string;
   isSubClass: boolean;
   hasTimeSlot: boolean;
+  extraAttributesName?: string,
   timeSlots: TimeSlot[];
   subClasses: SubClass[];
 }
 
+const initialProgrammeData = {
+  engClassName: '',
+  zhhkClassName: '',
+  zhcnClassName: '',
+  targetAudience: undefined,
+  startDate: '',
+  endDate: '',
+  isSubClass: false,
+  hasTimeSlot: false,
+  timeSlots: [{ startTime: '', endTime: '' }],
+  subClasses: [{ engClassName: '', zhcnClassName: '', zhhkClassName: '' }]
+}
+
 const Programme: React.FC = () => {
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
-  const [programmeData, setProgrammeData] = useState<ProgrammeData>({
-    engClassName: '',
-    zhhkClassName: '',
-    zhcnClassName: '',
-    startDate: '',
-    endDate: '',
-    isSubClass: false,
-    hasTimeSlot: false,
-    timeSlots: [{ startTime: '', endTime: '' }],
-    subClasses: [{ engClassName: '', zhcnClassName: '', zhhkClassName: '' }]
-  })
+  const [programmeData, setProgrammeData] = useState<ProgrammeData>(initialProgrammeData)
 
   const [errors, setErrors] = useState({
     engClassName: '',
@@ -63,10 +79,26 @@ const Programme: React.FC = () => {
 
   const englishPattern = /^[A-Za-z0-9 !@#$%^&*()_+={}\[\]|\\:;'",.<>?/-]*$/;
 
+  const handleTargetAudienceChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target
+    if (name === 'targetAudience') {
+      const targetAudienceEnum = (Object.keys(TargetAudience) as (keyof typeof TargetAudience)[]).find(key => TargetAudience[key] === value);
+      targetAudienceEnum && setProgrammeData(prevState => ({
+        ...prevState,
+        targetAudience: TargetAudience[targetAudienceEnum]
+      }))
+    }
+  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
     let newValue = type === 'checkbox' ? checked : value
-
+    if (name === 'extraAttributesName') {
+      setProgrammeData(prevState => ({
+        ...prevState,
+        extraAttributesName: value
+      }))
+    }
     if (type === 'checkbox') {
       setProgrammeData(prevState => ({
         ...prevState,
@@ -249,13 +281,25 @@ const Programme: React.FC = () => {
     }));
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     validateTimeSlots(programmeData.timeSlots)
     validateSubClass(programmeData.subClasses)
-    console.log(programmeData)
-    // Handle form submission (e.g., send data to an API)
+    // to backend
+    const saveProgrammeUrl = process.env.REACT_APP_BASE_URL + 'saveProgramme'
+    try {
+      const request = toClassesPayload(programmeData)
+      const response = await axios.post<any[]>(saveProgrammeUrl, request, Helper.postRequestHeader);
+      const status = response.status
+      if (status === 201 || status === 200) {
+        window.alert('Created!');
+        setProgrammeData(initialProgrammeData)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
+
 
   //need better state management if go to prod
   useEffect(() => {
@@ -346,6 +390,24 @@ const Programme: React.FC = () => {
                 />
               </div>
 
+              <div className={styles.formGroup} key="targetAudience">
+                <label className={styles.label}>Target Audience</label>
+                <select
+                  required
+                  className={styles.input}
+                  name="targetAudience"
+                  id="targetAudience"
+                  value={programmeData.targetAudience} // Optional: control the select element with state
+                  onChange={handleTargetAudienceChange}
+                >
+                  <option value=""></option>
+                  <option value="junior">Junior (age 0-9)</option>
+                  <option value="teens">Teens (age 10-18)</option>
+                  <option value="adult">Adult (age 18-60)</option>
+                  <option value="senior">Senior (age 60+)</option>
+                </select>
+              </div>
+
               <div className={styles.formGroup} >
                 <div className={styles.datePickerContainer}>
                   <div>
@@ -395,6 +457,17 @@ const Programme: React.FC = () => {
               {/* Conditionally render TimeRangePickers based on hasTimeSlot */}
               {programmeData.hasTimeSlot && (
                 <div className={styles.timeSlotsContainer}>
+                  <div className={styles.formGroup} key="extraAttributesName">
+                    <label className={styles.label}>Time Slot Attribute Name</label>
+                    <input
+                      className={styles.input}
+                      type="text"
+                      name="extraAttributesName"
+                      value={programmeData.extraAttributesName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                   {programmeData.timeSlots.map((slot, index) => (
                     <div className={styles.timeSlotWrapper} key={index}>
                       <TimeRangePicker

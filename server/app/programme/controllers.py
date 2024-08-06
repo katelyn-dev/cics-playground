@@ -77,6 +77,7 @@ def searchProgramme():
         "class_name_eng": "Summer 2024 Specific Skills Camp (Age 10-14)",
         "class_name_zhcn": "2024技能夏令营 (10-14 岁)",
         "class_name_zhhk": "2024技能夏令營 (10-14 歲)",
+        "target_audience": "junior",
         "class_start": "2024-07-30",
         "class_end": "2024-09-15",
         "extra_attributes": {
@@ -120,7 +121,7 @@ def saveProgramme():
 
     if 'extra_attributes' in data and not isinstance(data['extra_attributes'], dict):
         return make_response(jsonify({"error": "Invalid extra_attibutes, expected a dictionary"}), 400)
-  
+
     new_programme = Programme(class_group_id=data.get('class_group_id'), 
                          class_name_eng=data.get('class_name_eng'),
                          class_name_zhcn=data.get('class_name_zhcn'),

@@ -21,6 +21,7 @@ interface DisplayProgrammeData {
   class_name_eng: string;
   class_name_zhcn: string;
   class_name_zhhk: string;
+  target_audience: string;
   class_group_id: string;
   start_time: string;
   class_end: string;
@@ -40,6 +41,7 @@ const Forms: React.FC = () => {
       class_name_eng: "",
       class_name_zhcn: "",
       class_name_zhhk: "",
+      target_audience: "",
       class_group_id: "",
       start_time: "",
       class_end: ""
@@ -58,7 +60,7 @@ const Forms: React.FC = () => {
     const selectedProgramme = data.searchWord ? "name=" + data.searchWord : ""
     const expectedStartDate = data.expectedStartDate ? "startDate=" + data.expectedStartDate : ""
     const expectedEndDate = data.expectedEndDate ? "nendDateame=" + data.expectedEndDate : ""
-    const searchProgrammeUrl = "http://localhost:8080/searchProgramme?"
+    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?"
       + selectedProgramme + expectedStartDate + expectedEndDate
     try {
       const response = await axios.get<any[]>(searchProgrammeUrl);

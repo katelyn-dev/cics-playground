@@ -10,6 +10,7 @@ class Programme(db.Model):
     class_name_eng = db.Column(db.String(255), nullable=False)
     class_name_zhcn = db.Column(db.String(255), nullable=False)
     class_name_zhhk = db.Column(db.String(255), nullable=False)
+    target_audience = db.Column(db.String(255), nullable=False)
     has_subclass = db.Column(db.String(1), nullable=False)
     subclass_group_id = db.Column(db.String(255), nullable=True)
     has_extra_attributes = db.Column(db.String(1), nullable=True)

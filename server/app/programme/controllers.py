@@ -34,29 +34,40 @@ def getAll():
 @mod.route('/searchProgramme', methods=['GET'])
 def searchProgramme():
     programme_id = request.args.get('id')
+    name = request.args.get('name')
     start_date_str = request.args.get('startDate')
     end_date_str = request.args.get('endDate')
 
-    if start_date_str and end_date_str:
-        # Convert the string parameters to date objects
+     # Build query filters dynamically
+    filters = []
+    
+    if programme_id:
+        filters.append(Programme.class_group_id == programme_id)
+    
+    if name:
+        filters.append(Programme.class_name_eng.like(f"%{name}%"))  # Use LIKE for partial matches
+    
+    if start_date_str:
         try:
             start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            filters.append(Programme.class_start >= start_date)
         except ValueError:
-            return jsonify({"error": "Invalid date format"}), 400
-        
-        # Query the database for forms within the specified date range
-        programmes = Programme.query.filter(
-            Programme.class_group_id == programme_id, 
-            Programme.class_start >= start_date,
-            Programme.class_end <= end_date
-        ).all()
-        
-        if programmes:
-          return make_response(programmes_schema.dump(programmes), 200)
-        return make_response(jsonify({'message': 'classes not found'}), 404)
+            return jsonify({"error": "Invalid start date format"}), 400
+    
+    if end_date_str:
+        try:
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            filters.append(Programme.class_end <= end_date)
+        except ValueError:
+            return jsonify({"error": "Invalid end date format"}), 400
+
+    # Query the database with the filters
+    programmes = Programme.query.filter(*filters).all()
+    
+    if programmes:
+        return make_response(programmes_schema.dump(programmes), 200)
     else:
-        return jsonify({"error": "Missing startDate or endDate parameter"}), 400
+        return make_response(jsonify({'message': 'Classes not found'}), 404)
 
 # http://127.0.0.1:8080/saveProgramme 
 """

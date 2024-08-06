@@ -6,6 +6,8 @@ import Header from "./components/Header";
 import QuestionBuilder from './components/QuestionBuilder';
 import SurveyFormPage from "./pages/SurveyFormPage";
 import Programme from './pages/programmeCreation';
+import Forms from './components/FormsCreator';
+import Footer from './components/Footer';
 
 function App() {
 
@@ -16,10 +18,12 @@ function App() {
         <Header/>
         <Routes>
           <Route path="/" element={<Programme />}></Route>
+          <Route path="/formCreate" element={<Forms />}></Route> 
           <Route path="/form" element={<Form />}/>
           <Route path="/questionnaire" element={<QuestionBuilder />}/>
           <Route path="/form-creator" element={<SurveyFormPage />}/>
         </Routes>
+        <Footer/>
       </div>
     </Router>
   );

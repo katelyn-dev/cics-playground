@@ -5,6 +5,7 @@ import Form from "./pages/FormPage";
 import Header from "./components/Header";
 import QuestionBuilder from './components/QuestionBuilder';
 import SurveyFormPage from "./pages/SurveyFormPage";
+import QRCodePage from "./pages/QRCodePage";
 
 function App() {
 
@@ -14,9 +15,10 @@ function App() {
       <div className="App">
         <Header/>
         <Routes>
-          <Route path="/form" element={<Form />}/>
+          <Route path="/form/:id" element={<Form />}/>
           <Route path="/questionnaire" element={<QuestionBuilder />}/>
           <Route path="/form-creator" element={<SurveyFormPage />}/>
+          <Route path="/qr-code" element={<QRCodePage />}/>
         </Routes>
       </div>
     </Router>

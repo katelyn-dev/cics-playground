@@ -59,7 +59,7 @@ class Students(db.Model):
 class Application(db.Model):
     id = db.Column(db.String(255), primary_key=True)
     student_id = db.Column(db.String(255), db.ForeignKey('students.id'))
-    class_id = db.Column(db.String(255), db.ForeignKey('classes.id'))
+    class_group_id = db.Column(db.String(255), db.ForeignKey('classes.class_group_id'))
     pick_up_by = db.Column(db.String(255))
     last_modified_time = db.Column(db.BigInteger)
     is_paid = db.Column(db.BigInteger)

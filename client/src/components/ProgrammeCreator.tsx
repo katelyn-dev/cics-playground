@@ -188,9 +188,9 @@ const Programme: React.FC = () => {
     setIsFormValid(true)
   }
 
-  const validateSubClass = (subClasses: SubClass[], name?:string | undefined) => {
+  const validateSubClass = (subClasses: SubClass[], name?: string | undefined) => {
     if (!programmeData.isSubClass) return;
-    const subClassesErrors =   {
+    const subClassesErrors = {
       engClassName: '',
       zhhkClassName: '',
       zhcnClassName: '',
@@ -262,7 +262,7 @@ const Programme: React.FC = () => {
     if (!programmeData.isSubClass) {
       setErrors(prevState => ({
         ...prevState,
-        subClasses:    {
+        subClasses: {
           engClassName: '',
           zhhkClassName: '',
           zhcnClassName: '',
@@ -270,7 +270,7 @@ const Programme: React.FC = () => {
       }));
       setProgrammeData(prevState => ({
         ...prevState,
-        subClasses:    [{
+        subClasses: [{
           engClassName: '',
           zhhkClassName: '',
           zhcnClassName: '',
@@ -294,10 +294,10 @@ const Programme: React.FC = () => {
     }
   }, [programmeData.hasTimeSlot, programmeData.isSubClass])
 
-  
-  useEffect(() => { 
+
+  useEffect(() => {
     validateSubClass(programmeData.subClasses)
-  },[programmeData.subClasses])
+  }, [programmeData.subClasses])
 
   const renderForm = () => {
     return (
@@ -346,31 +346,35 @@ const Programme: React.FC = () => {
                 />
               </div>
 
-              <div className={styles.formGroup} key="startDate">
-                <label className={styles.label}>Start Date</label>
-                <input
-                  className={styles.input}
-                  type="date"
-                  name="startDate"
-                  value={programmeData.startDate}
-                  onChange={handleChange}
-                  min={minDate}
-                  required
-                />
+              <div className={styles.formGroup} >
+                <div className={styles.datePickerContainer}>
+                  <div>
+                    <label className={styles.label}>Start Date</label>
+                    <input
+                      className={styles.input}
+                      type="date"
+                      name="startDate"
+                      value={programmeData.startDate}
+                      onChange={handleChange}
+                      min={minDate}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className={styles.label}>End Date</label>
+                    <input
+                      className={styles.input}
+                      type="date"
+                      name="endDate"
+                      value={programmeData.endDate}
+                      onChange={handleChange}
+                      min={minDate}
+                      required
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className={styles.formGroup} key="endDate">
-                <label className={styles.label}>End Date</label>
-                <input
-                  className={styles.input}
-                  type="date"
-                  name="endDate"
-                  value={programmeData.endDate}
-                  onChange={handleChange}
-                  min={minDate}
-                  required
-                />
-              </div>
 
               <div className={styles.formGroup} key="hasTimeSlot">
                 <div className={styles.toggleSwitchWrapper}>

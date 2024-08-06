@@ -1,4 +1,17 @@
-/* Ensure that all elements are centered and aligned properly */
+.datePickerContainer {
+  display: flex;
+  gap: 30px; /* Adjust spacing between date pickers */
+  align-items: center; /* Align items vertically */
+}
+
+.datePickerContainer label {
+  margin-right: 55px; /* Space between label and input */
+}
+
+.datePickerContainer input[type="date"] {
+  padding: 10px;
+}
+
 .timeSlotsContainer {
   display: flex;
   flex-direction: column; /* Arrange time slots vertically */

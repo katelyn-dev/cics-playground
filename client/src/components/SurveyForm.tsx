@@ -3,14 +3,22 @@ import {Survey} from "survey-react-ui";
 import {Model, StylesManager} from "survey-core";
 import 'survey-core/defaultV2.min.css';
 import {useQuery} from "react-query";
-import {getCreatedFormJson} from "../api/dataService";
+import {getCreatedFormJson, getCreatedFormsJson} from "../api/dataService";
 
 // Initialize SurveyJS styles
 StylesManager.applyTheme("defaultV2");
 
 
-const SurveyForm: React.FC = () => {
-  const { data, error, isLoading } = useQuery<Object,Error>({queryKey: ['getCreatedFormJson'], queryFn: getCreatedFormJson});
+interface SurveyFormProps {
+  id: number;
+}
+
+const SurveyForm: React.FC<SurveyFormProps> = ({id}) => {
+  console.log(`number: ${id}`)
+  const { data, error, isLoading } = useQuery<Object, Error>(
+    ["getCreatedFormsJson", id], // Include id in the query key
+    () => getCreatedFormsJson(id) // Pass id via the closure
+  );
 
   useEffect(() => {
     if(isLoading || !data) return;
@@ -23,6 +31,7 @@ const SurveyForm: React.FC = () => {
       console.log(JSON.stringify(sender.data, null, 3));
     });
   }, []);
+
   const survey = new Model(data);
   survey.locale = "zh-cn";
   survey.language = "zh-cn";

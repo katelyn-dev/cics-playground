@@ -1,5 +1,5 @@
 import {SurveyCreator} from "survey-creator-react";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef} from "react";
 import 'survey-core/defaultV2.min.css';
 import 'survey-creator-core/survey-creator-core.min.css';
 import {Action, surveyLocalization} from "survey-core";
@@ -183,6 +183,24 @@ const SurveyCreatorRenderComponent: React.FC = () => {
     creatorRef.current = newCreator;
     creatorRef.current.JSON = data
     creatorRef.current?.render("surveyCreatorContainer");
+
+    creatorRef.current?.onElementAllowOperations.add(function (sender, options) {
+
+        //options.allowEdit = false;
+    })
+    creatorRef.current?.onSurveyInstanceCreated.add(function (sender, options) {
+      const spans = document.querySelectorAll('span');
+      if(creatorRef.current?.JSON.elements?.allowEdit === false) {
+        
+      }
+      // Loop through each span element
+      spans.forEach((span) => {
+        // Check if the text content is "ui"
+        if (span?.textContent === "Username") {
+          // Disable contentEditable
+          span.contentEditable = "false";
+        }
+    })})
 
     return () => {
       if(creatorRef?.current) {

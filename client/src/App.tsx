@@ -8,6 +8,7 @@ import SurveyFormPage from "./pages/SurveyFormPage";
 import Programme from './pages/programmeCreation';
 import Forms from './components/FormsCreator';
 import Footer from './components/Footer';
+import QRCodePage from "./pages/QRCodePage";
 
 function App() {
 
@@ -20,8 +21,10 @@ function App() {
           <Route path="/" element={<Programme />}></Route>
           <Route path="/formCreate" element={<Forms />}></Route> 
           <Route path="/form" element={<Form />}/>
+          <Route path="/form/:id" element={<Form />}/>
           <Route path="/questionnaire" element={<QuestionBuilder />}/>
           <Route path="/form-creator" element={<SurveyFormPage />}/>
+          <Route path="/qr-code" element={<QRCodePage />}/>
         </Routes>
         <Footer/>
       </div>

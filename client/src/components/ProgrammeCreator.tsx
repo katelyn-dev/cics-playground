@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import styles from "../styles/Programme.module.css";
 import SubmitButton from "./SubmitButton";
 import TimeRangePicker from './TimeRangePicker';
-import cicsLogo from '../static/image/cics-logo.png';
+import onlineCourse from '../static/image/online-course.png';
 
 interface TimeSlot {
   startTime: string;
@@ -305,8 +305,8 @@ const Programme: React.FC = () => {
         <div className={styles.darkBackgroundColor} />
         <div className={styles.container}>
           <div className={styles.leftSection}>
-            <img src={cicsLogo} alt="CICS Logo" style={{ width: '300px', height: 'auto' }} />
-            <h1>&nbsp;</h1>
+            <img src={onlineCourse} alt="onlineCourse" style={{ width: '400px', height: 'auto' }} />
+            {/* <h1>&nbsp;</h1> */}
             <h1 className={styles.formHeader}>Add New Programme</h1>
             <form className={styles.form} onSubmit={handleSubmit}>
               <div className={styles.formGroup} key="engClassName">

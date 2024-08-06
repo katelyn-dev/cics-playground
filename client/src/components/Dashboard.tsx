@@ -43,10 +43,14 @@ export const Dashboard: React.FunctionComponent<Classes> = (classes) => {
         <p className={styles.card_words}>Loading...</p>
         <a href="/forms" className={styles.btn}>Manage Form</a>
       </div>
-      <div className={styles.search_bar}>
-        <input type="text" id="course_search" placeholder="Search courses..."/>
-        <button className={styles.btn}>Search</button>
+
+      <div className={styles.search_container}>
+        <input type="text" id="student-name-search" placeholder="Search by name">
+        <input type="text" id="student-id-search" placeholder="Search by ID">
+        <button onclick="searchStudents()">Search</button>
       </div>
+
+
       <table className={styles.course_list}>
         <thead>
           <tr>

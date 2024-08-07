@@ -28,7 +28,7 @@ def create_form():
   form_model = Form()
   form_id = form_model.create_form(data)
 
-  return jsonify({"message": f"Form created successfully with form_id: {form_id}"}), 201
+  return jsonify({"form_id": form_id, "message": f"Form created successfully with form_id: {form_id}"}), 201
 
 
 @mod.route("/submitForm", methods=['POST'])
@@ -83,19 +83,38 @@ def email_notification():
 
 """
     Query parameters:
-    - id (optional): The ID of the form to retrieve.
+    - class_group_id: The ID of the form to retrieve.
 """
-@mod.route("/getForm", methods=["GET"])
-def get_all_form():
+@mod.route("/getFormIdByClassId", methods=["GET"])
+def get_form_id_by_class_id():
   if "id" in request.args:
-    form_id = request.args['id']
-    form = Form.query.filter_by(id=form_id).first()
+    id = request.args['id']
+    form = Form.query.filter_by(class_group_id=id).first()
     if form:
-      return make_response(form_schema.dump(form), 200)
+        return make_response(jsonify({'form_id': form.form_id}), 200)
     return make_response(jsonify({'message': 'form not found'}), 404)
   
   forms = Form.query.all()
-  return forms_schema.dump(forms)
+  form_id = [form.form_id for form in forms]
+  return  make_response(jsonify({'form_id': form_id}), 200)
+
+
+"""
+    Query parameters:
+    - form_id: The ID of the form to retrieve.
+"""
+@mod.route("/getFormByFormId", methods=["GET"])
+def get_form_by_form_id():
+  if "id" in request.args:
+    id = request.args['id']
+    form = Form.query.filter_by(form_id=id).first()
+    if form:
+        return make_response(jsonify({'form_json': form.form_json}), 200)
+    return make_response(jsonify({'message': 'form not found'}), 404)
+  
+  forms = Form.query.all()
+  form_json = [form.form_json for form in forms]
+  return  make_response(jsonify({'form_json': form_json}), 200)
 
 
 # http://127.0.0.1:8080/searchForm?startDate=yyyy-mm-dd&endDate=yyyy-mm-dd
@@ -108,7 +127,6 @@ def get_all_form():
 """
 @mod.route("/searchForm", methods=["GET"])
 def searchForm():
-
     query_params = request.args
     try:
         filters = Form.apply_filters(query_params)

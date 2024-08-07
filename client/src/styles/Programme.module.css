@@ -1,3 +1,31 @@
+/* styles.module.css */
+.dollarSignInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dollarSign {
+  position: absolute;
+  left: 0.5em; /* Adjust as needed to fit your design */
+  color: #5a4b4b; /* Adjust color as needed */
+  font-size: 1em; /* Adjust size as needed */
+  pointer-events: none; /* Prevent interaction with the dollar sign */
+  background-color: white; /* Match the input background color */
+  padding: 0 0.5em; /* Adjust padding if needed */
+}
+
+.dollarSignInput {
+  padding-left: 2em; /* Ensure there is enough space for the dollar sign */
+  width: 95%;
+  height: 2em;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+
 .datePickerContainer {
   display: flex;
   gap: 30px; /* Adjust spacing between date pickers */

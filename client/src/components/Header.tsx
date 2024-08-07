@@ -21,17 +21,17 @@ const Header: React.FC<HeaderProps> = ({children}) => {
           </li>
           <li className={styles.navItem}>
             <NavLink to="/formCreate" className={styles.navLink}>
-              Create Form
+              Search & Create Form
             </NavLink>
           </li>
-          <li className={styles.navItem}>
+          {/* <li className={styles.navItem}>
             <NavLink to="/form" className={styles.navLink}>
               Form
             </NavLink>
-          </li>
+          </li> */}
           <li className={styles.navItem}>
-            <NavLink to="/form-creator" className={styles.navLink}>
-              Form Creator
+            <NavLink to="/form-editor" className={styles.navLink}>
+              Form Editor
             </NavLink>
           </li>
           <li className={styles.navItem}>

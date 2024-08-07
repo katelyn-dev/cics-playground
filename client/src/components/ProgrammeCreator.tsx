@@ -31,6 +31,7 @@ export interface ProgrammeData {
   zhhkClassName: string;
   zhcnClassName: string;
   targetAudience: TargetAudience | undefined;
+  fee: string;
   startDate: string;
   endDate: string;
   isSubClass: boolean;
@@ -45,6 +46,7 @@ const initialProgrammeData = {
   zhhkClassName: '',
   zhcnClassName: '',
   targetAudience: undefined,
+  fee: '',
   startDate: '',
   endDate: '',
   isSubClass: false,
@@ -93,6 +95,12 @@ const Programme: React.FC = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
     let newValue = type === 'checkbox' ? checked : value
+    if (name === 'fee') {
+      setProgrammeData(prevState => ({
+        ...prevState,
+        fee: value
+      }))
+    }
     if (name === 'extraAttributesName') {
       setProgrammeData(prevState => ({
         ...prevState,
@@ -293,6 +301,10 @@ const Programme: React.FC = () => {
       const status = response.status
       if (status === 201 || status === 200) {
         window.alert('Created!');
+        const init = {
+          ...initialProgrammeData,
+          targetAudience: ''
+        }
         setProgrammeData(initialProgrammeData)
       }
     } catch (error) {
@@ -400,12 +412,28 @@ const Programme: React.FC = () => {
                   value={programmeData.targetAudience} // Optional: control the select element with state
                   onChange={handleTargetAudienceChange}
                 >
-                  <option value=""></option>
+                  <option value="-"></option>
                   <option value="junior">Junior (age 0-9)</option>
                   <option value="teens">Teens (age 10-18)</option>
                   <option value="adult">Adult (age 18-60)</option>
                   <option value="senior">Senior (age 60+)</option>
                 </select>
+              </div>
+
+              <div className={styles.formGroup} key="fee">
+                <label className={styles.label}>Fee</label>
+                <div className={styles.dollarSignInputContainer}>
+                  <span className={styles.dollarSign}>$</span>
+                  <input
+                    className={styles.dollarSignInput}
+                    type="text"
+                    name="fee"
+                    id="fee"
+                    value={programmeData.fee}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
 
               <div className={styles.formGroup} >

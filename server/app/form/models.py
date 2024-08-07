@@ -7,6 +7,7 @@ class Form(db.Model):
     __tablename__ = 'form'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    class_group_id = db.Column(db.String(255))
     form_id = db.Column(db.String(255))
     form_json = db.Column(db.Text)
     created_by = db.Column(db.String(255))

@@ -7,11 +7,19 @@ import {getCreatedFormJson, translateText} from "../api/dataService";
 import {removeSurveyToolBoxItems, supportedLanguage, surveyOptions} from "../settings/surveyCreatorOptions";
 import {useQuery} from "react-query";
 
-const SurveyCreatorRenderComponent: React.FC = () => {
+interface SurveyFormProps {
+  id: string;
+}
 
+const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
+  console.log(`number: ${id}`)
   const containerRef = useRef<HTMLDivElement | null>(null);
   const creatorRef = useRef<SurveyCreator | null>(null);
-  const { data, error, isLoading } = useQuery<Object,Error>({queryKey: ['getCreatedFormJson'], queryFn: getCreatedFormJson});
+  const { data, error, isLoading } = useQuery<Object, Error>(
+    ["getCreatedFormJson", id], // Include id in the query key
+    () => getCreatedFormJson(id) // Pass id via the closure
+  );
+
 
   // Function to download JSON as a file
   const downloadJsonFile = (json: any, filename: string) => {

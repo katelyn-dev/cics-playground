@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
+from sqlalchemy import cast, func, not_
 
 from app import db
 from .models import Programme, programme_schema, programmes_schema
@@ -38,22 +39,23 @@ def searchProgramme():
     start_date_str = request.args.get('startDate')
     end_date_str = request.args.get('endDate')
 
-     # Build query filters dynamically
+    # Build query filters dynamically
     filters = []
-    
+
+    filters.append(not_(Programme.class_group_id.startswith("SCL")))
     if programme_id:
         filters.append(Programme.class_group_id == programme_id)
-    
+
     if name:
         filters.append(Programme.class_name_eng.like(f"%{name}%"))  # Use LIKE for partial matches
-    
+
     if start_date_str:
         try:
             start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
             filters.append(Programme.class_start >= start_date)
         except ValueError:
             return jsonify({"error": "Invalid start date format"}), 400
-    
+
     if end_date_str:
         try:
             end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
@@ -61,9 +63,13 @@ def searchProgramme():
         except ValueError:
             return jsonify({"error": "Invalid end date format"}), 400
 
-    # Query the database with the filters
-    programmes = Programme.query.filter(*filters).all()
-    
+    # Construct and print the query for debugging
+    query = Programme.query.filter(*filters)
+    print("Constructed Query:", str(query))
+
+    # Execute the query
+    programmes = query.all()
+
     if programmes:
         return make_response(programmes_schema.dump(programmes), 200)
     else:
@@ -99,11 +105,18 @@ def searchProgramme():
 def saveProgramme():
     data = request.get_json()
     
+    class_prefix = 'CL'
+    max_class_group_id = db.session.query(
+        db.func.max(db.cast(db.func.substring(Programme.class_group_id, len(class_prefix) + 2), db.Integer))
+    ).filter(Programme.class_group_id.like(f"{class_prefix}_%")).scalar()
+    new_class_group = 1 if max_class_group_id is None else max_class_group_id + 1
+    new_class_group_id = f"{class_prefix}{new_class_group:05d}"
+
     if not data:
         return make_response(jsonify({'message': "Invalid request body"}), 400)
 
-    if 'class_group_id' not in data or 'class_name_eng' not in data or 'class_name_zhcn' not in data or 'class_name_zhhk' not in data:
-        return make_response(jsonify({'message': "Missing class_group_id / class_name_eng / class_name_zhcn / class_name_zhhk"}), 400)
+    if 'class_name_eng' not in data or 'class_name_zhcn' not in data or 'class_name_zhhk' not in data:
+        return make_response(jsonify({'message': "Missing class_name_eng / class_name_zhcn / class_name_zhhk"}), 400)
 
     class_start = data.get('class_start')
     class_end = data.get('class_end')
@@ -122,11 +135,12 @@ def saveProgramme():
     if 'extra_attributes' in data and not isinstance(data['extra_attributes'], dict):
         return make_response(jsonify({"error": "Invalid extra_attibutes, expected a dictionary"}), 400)
 
-    new_programme = Programme(class_group_id=data.get('class_group_id'), 
+    new_programme = Programme(class_group_id=new_class_group_id, 
                          class_name_eng=data.get('class_name_eng'),
                          class_name_zhcn=data.get('class_name_zhcn'),
                          class_name_zhhk=data.get('class_name_zhhk'),
                          has_subclass = data.get('has_subclass'),
+                         class_fee = data.get('class_fee'),
                          subclass_group_id = data.get('subclass_group_id'),
                          has_extra_attributes = data.get('has_extra_attributes'),
                          extra_attributes_name = data.get('extra_attributes_name'),

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
 import Form from "./pages/FormPage";
 import Header from "./components/Header";
 import QuestionBuilder from './components/QuestionBuilder';
@@ -10,26 +10,34 @@ import Forms from './components/FormsCreator';
 import Footer from './components/Footer';
 import QRCodePage from "./pages/QRCodePage";
 
-function App() {
+const App: React.FC = () => {
+  const location = useLocation();
 
+  // Determine whether to show the Header based on the current path
+  const shouldShowHeader = !location.pathname.startsWith('/form/');
 
   return (
-    <Router>
-      <div className="App">
-        <Header/>
-        <Routes>
-          <Route path="/" element={<Programme />}></Route>
-          <Route path="/formCreate" element={<Forms />}></Route> 
-          <Route path="/form" element={<Form />}/>
-          <Route path="/form/:id" element={<Form />}/>
-          <Route path="/questionnaire" element={<QuestionBuilder />}/>
-          <Route path="/form-creator" element={<SurveyFormPage />}/>
-          <Route path="/qr-code" element={<QRCodePage />}/>
-        </Routes>
-        <Footer/>
-      </div>
-    </Router>
+    <div className="App">
+      {shouldShowHeader && <Header />}
+      <Routes>
+        <Route path="/" element={<Programme />} />
+        <Route path="/formCreate" element={<Forms />} />
+        <Route path="/form" element={<Form />} />
+        <Route path="/form/:id" element={<Form />} />
+        <Route path="/questionnaire" element={<QuestionBuilder />} />
+        <Route path="/form-editor" element={<SurveyFormPage />} />
+        <Route path="/form-editor/:id" element={<SurveyFormPage />} />
+        <Route path="/qr-code" element={<QRCodePage />} />
+      </Routes>
+      <Footer />
+    </div>
   );
-}
+};
 
-export default App;
+const Main: React.FC = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default Main;

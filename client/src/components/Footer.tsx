@@ -1,8 +1,8 @@
+
 import React from 'react';
 import styles from '../styles/Footer.module.css';
 
 const Footer: React.FC = () => {
-  console.log("called header")
   return (
 
       <footer className={styles.footer}>

@@ -27,7 +27,9 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
 
   useEffect(() => { 
     setBgimage(Helper.getRandomBackground())
-  },[])
+  }, [])
+  // useEffect(() => {
+  //   if (isLoading || !data) return;
 
   const survey = new Model(data);
   survey.locale = locale
@@ -52,6 +54,9 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
 
   survey.onComplete.add((sender, options) => {
     console.log(JSON.stringify(sender.data, null, 3));
+    //1.check email + formId in application, if exist return
+    //2. save students + class + (emergency_contact) in application
+    // const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
   });
 
   return (

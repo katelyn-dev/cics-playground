@@ -62,8 +62,9 @@ export const toSaveFormRequest = (newForm: string) => {
 //   "gender": "male"
 // }
 
-// export const toMappedSurveyResponse = (formId: string, data:any) => { 
-//   //1. base on target audience type by formId, check which table to insert
-//   const firstname = data['firstname']
+//all under applicants
+export const toMappedSurveyResponse = (formId: string, data:any) => { 
+  //1. base on target audience type by formId, check which table to insert
+  const firstname = data['firstname']
 
-// }
+}

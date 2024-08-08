@@ -36,7 +36,7 @@ class ProgrammeSchema(ma.SQLAlchemyAutoSchema):
 
 class Students(db.Model):
     __tablename__ = "students"
-    id = db.Column(db.String(255), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     lastname = db.Column(db.String(255))
     firstname = db.Column(db.String(255))
     gender = db.Column(db.String(255))
@@ -54,6 +54,44 @@ class Students(db.Model):
     is_followed_ig = db.Column(db.String(255))
     is_signed = db.Column(db.String(255))
     is_consent = db.Column(db.String(255))
+    comment = db.Column(db.String(255))
+    start_time = db.Column(db.DateTime)
+    last_modified_time = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+        rep = 'Students(' + str(self.id) + ',' + self.lastname + ')'
+        return rep
+    
+    @classmethod
+    def create_student(cls, data):
+        max_id = db.session.query(func.max(cls.id)).scalar()  # Get the maximum ID value
+        new_id = (max_id or 0) + 1 
+        new_student = Students(
+            id = new_id,
+            lastname=data.get('lastname'), 
+            firstname=data.get('firstname'),
+            gender=data.get('gender'),
+            phone_number = data.get('phone_number'),
+            email = data.get('email'),
+            date_of_birth = data.get('date_of_birth'),
+            age = data.get('age'),
+            address_street = data.get('address_street'),
+            address_city = data.get('address_city'),
+            address_postal_code=data.get('address_postal_code'),
+            country_of_origin=data.get('country_of_origin'),
+            length_of_residence=data.get('length_of_residence'),
+            is_first_time_apply=data.get('is_first_time_apply'),
+            is_followed_ig=data.get('is_followed_ig'),
+            is_signed=data.get('is_signed'),
+            is_consent=data.get('is_consent'),
+            comment=data.get('comment'),
+            )
+        db.session.add(new_student)
+        db.session.commit()
+        print(new_id)
+        return new_id
+
+class StudentsSchema(ma.SQLAlchemyAutoSchema):
     #stu_comment = db.Column(db.String(255))
     start_time = db.Column(db.DateTime,nullable=True)
     last_modified_time = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
@@ -125,19 +163,35 @@ class EmergencyContact(db.Model):
         return filters
 
 class Application(db.Model):
-    id = db.Column(db.String(255), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String(255), db.ForeignKey('students.id'))
     class_group_id = db.Column(db.String(255), db.ForeignKey('classes.class_group_id'))
     emergency_contact_id = db.Column(db.String(255), db.ForeignKey('emergency_contacts.id'))
     pick_up_by = db.Column(db.String(255))
     last_modified_time = db.Column(db.BigInteger)
-    is_paid = db.Column(db.BigInteger)
+    is_paid = db.Column(db.String(255))
     student = db.relationship('Students', foreign_keys=[student_id])
     class_info = db.relationship('Programme', foreign_keys=[class_group_id])
+    
+    @classmethod
+    def create_application(cls, data, student_id, class_group_id):
+        max_id = db.session.query(func.max(cls.id)).scalar()  # Get the maximum ID value
+        new_id = (max_id or 0) + 1 
+        new_application = Application(
+            id = new_id,
+            student_id = student_id, 
+            class_group_id = class_group_id, 
+            pick_up_by = data.get('pick_up_by'), 
+            is_paid = data.get('is_paid'), 
+        )
+        db.session.add(new_application)
+        db.session.commit()
+    
     emergency_contact_info = db.relationship('EmergencyContact', foreign_keys=[emergency_contact_id])
 
 programme_schema = ProgrammeSchema()
 programmes_schema = ProgrammeSchema(many=True)
 
-student_schema = StudentSchema()
-students_schema = StudentSchema(many=True)
+student_schema = StudentsSchema()
+students_schema = StudentsSchema(many=True)
+

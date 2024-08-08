@@ -5,7 +5,7 @@ import {useParams} from "react-router";
 const FormPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   return (
-    <div style={{  alignItems: 'left', padding: '10rem', marginTop: '0px'
+    <div style={{  alignItems: 'left', padding: '0rem', marginTop: '0px'
     }}>
       <SurveyForm id={(id ?? "0")}/>
     </div>

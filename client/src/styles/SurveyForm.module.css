@@ -1,0 +1,66 @@
+.dropdown-chevron {
+    background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 10 10' style='enable-background:new 0 0 10 10;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0%7Bfill:%23404040;%7D%0A%3C/style%3E%3Cpolygon class='st0' points='2,2 0,4 5,9 10,4 8,2 5,5 '/%3E%3C/svg%3E%0A");
+    background-repeat: no-repeat, repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 0.57em 100%;
+}
+.navigation-block {
+    display: flex;
+    padding: 24px;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+    background-color: #fff;
+}
+
+.navigation-page-selector {
+    flex-basis: 240px;
+}
+.navigation-progress-container {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+.navigation-buttons-container {
+    display: flex;
+    gap: 8px;
+}
+.navigation-button {
+    line-height: 24px;
+    font-weight: 600;
+    font-family: 'Open Sans';
+    font-size: 16px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    background-color: #19b394;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+}
+.navigation-button:focus {
+    color: #19b394;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px #19B394;
+}
+.navigation-button:hover {
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    background-color: #14A48B;
+}
+.navigation-text-container {
+    position: relative;
+    width: 100%;
+}
+.navigation-text {
+    position: absolute;
+    right: 0;
+    top: 8px;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(0, 0, 0, 0.45);
+}

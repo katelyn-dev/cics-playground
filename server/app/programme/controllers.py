@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, make_response, request
 from sqlalchemy import cast, func, not_
 
 from app import db
-from .models import Programme, programme_schema, programmes_schema
+from .models import Application, Programme, Students, programme_schema, programmes_schema, student_schema
 from datetime import datetime
 
 mod = Blueprint('programmes', __name__)
@@ -154,3 +154,67 @@ def saveProgramme():
     db.session.commit()
 
     return make_response(jsonify(programme_schema.dump(new_programme)),201)
+
+@mod.route("/saveStudent", methods=['POST'])
+def save_student():
+    data = request.get_json()
+    if not data:
+        return make_response(jsonify({'message': "Invalid request body"}), 400)
+
+    formId = data.get("formId")
+    class_group_id = ''
+    from app.form.models import Form
+    form = Form.query.filter_by(form_id=formId).first()
+    if form:
+       class_group_id = form.class_group_id
+       print(class_group_id)
+
+    required_fields = ['lastname', 'firstname', 'phone_number', 'email']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return make_response(jsonify({'message': f"Missing {', '.join(missing_fields)}"}), 400)
+    email = data.get('email')
+    lastname = data.get('lastname')
+    firstname = data.get('firstname')
+    check_student_exist(data, class_group_id, email, lastname, firstname)
+
+
+    return make_response(jsonify({}),200)
+
+def check_student_exist(data, class_group_id, email, lastname, firstname):
+    filters = []
+    filters.append(Students.email == email)
+    filters.append(Students.lastname == lastname)
+    filters.append(Students.firstname == firstname)  
+    student_id_query = Students.query.filter(*filters)
+    students = student_id_query.all()
+    student_id = [student.id for student in students]
+    print(student_id[0])
+    if student_id:
+        application_filters = []
+        Application.query.filter_by(class_group_id=id).first()
+        application_filters.append(Application.class_group_id == class_group_id)
+        application_query = Application.query.filter(*application_filters)
+        applications = application_query.all()
+        if applications:
+            current_application_id = [application.id for application in applications]
+            return f"Already applied with {current_application_id}"
+        else: 
+            create_application(data, student_id, class_group_id)
+            return "current student apply"
+    else:
+        new_student_id = create_student(data)
+        new_pplication_id = create_application(data, new_student_id, class_group_id)
+        return f"New apply id - {new_pplication_id}"
+
+def create_student(data):
+    student_model = Students()
+    new_student_id = student_model.create_student(data)
+    print(new_student_id)
+    return new_student_id
+
+def create_application(data, student_id, class_group_id):
+    application_model = Application()
+    application_id = application_model.create_application(data, student_id, class_group_id)
+    print(application_id)
+    return application_id

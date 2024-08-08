@@ -142,7 +142,7 @@ const Forms: React.FC = () => {
       const status = response.status
       if (status === 200) {
         const formId = response.data.form_id
-        const createdFormUrl = window.location.host + "/form/" + formId
+        const createdFormUrl = process.env.REACT_APP_HOST + "/form/" + formId
         setPopupUrl(createdFormUrl); // Set the URL for the popup
         setIsPopupOpen(true); // Open the popup
       } 
@@ -191,7 +191,6 @@ const Forms: React.FC = () => {
                     name="selectedProgramme"
                     className={styles.searchBox}
                     type="text"
-                    value={searchTerm}
                     onChange={handleSearchChange}
                     onClick={() => setIsOpen(prev => !prev)}
                     placeholder="Search..."

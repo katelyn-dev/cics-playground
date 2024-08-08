@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Form from "./pages/FormPage";
 import Header from "./components/Header";
 import QuestionBuilder from './components/QuestionBuilder';
@@ -12,7 +12,6 @@ import QRCodePage from "./pages/QRCodePage";
 
 const App: React.FC = () => {
   const location = useLocation();
-
   // Determine whether to show the Header based on the current path
   const shouldShowHeader = !location.pathname.startsWith('/form/');
 
@@ -35,8 +34,8 @@ const App: React.FC = () => {
 };
 
 const Main: React.FC = () => (
-  <Router>
-    <App />
+  <Router> 
+      <App />
   </Router>
 );
 

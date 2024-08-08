@@ -1,7 +1,5 @@
 from flask import Blueprint, Flask, request, jsonify, make_response
 from .models import Form_Template
-from app import db, ma
-from app.config import Config
 from datetime import datetime
 from sqlalchemy import and_
 

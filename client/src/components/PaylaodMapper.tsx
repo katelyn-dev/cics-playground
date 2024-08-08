@@ -1,5 +1,6 @@
 import { DisplayProgrammeData } from "./FormsCreator"
 import { ProgrammeData } from "./ProgrammeCreator"
+import { ProgrammeDetail } from "./SurveyForm"
 
 
 export const toClassesPayload = (data: ProgrammeData) => {
@@ -19,7 +20,7 @@ export const toClassesPayload = (data: ProgrammeData) => {
     class_name_zhcn: data.zhcnClassName,
     class_name_zhhk: data.zhhkClassName,
     target_audience: data.targetAudience,
-    class_fee : data.fee,
+    class_fee: data.fee,
     class_start: data.startDate,
     class_end: data.endDate,
     extra_attributes_name: data.extraAttributesName,
@@ -48,23 +49,12 @@ export const toSaveFormRequest = (newForm: string) => {
   }
 }
 
-// {
-//   "firstname": "Ken",
-//   "lastname": "Ip",
-//   "email": "test@gmail.com",
-//   "contry_of_origin": "Canada",
-//   "phone_number": "4162123121",
-//   "address_city": "north_york",
-//   "identity_status": "student_permit",
-//   "years_in_canada": "less_than_1",
-//   "is_first_time_apply": true,
-//   "age_group": "25-29",
-//   "gender": "male"
-// }
-
-//all under applicants
-export const toMappedSurveyResponse = (formId: string, data:any) => { 
-  //1. base on target audience type by formId, check which table to insert
-  const firstname = data['firstname']
-
+export const toEmailRequest = (to_email: string, to_name: string, details: ProgrammeDetail[], paymentLink: string) => {
+  return {
+    "to_email": to_email,
+    "to_name": to_name,
+    "registration_detail": details[0].class_name_eng,
+    "registration_fee": details[0].class_fee,
+    "payment_link": paymentLink
+  }
 }

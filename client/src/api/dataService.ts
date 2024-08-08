@@ -17,6 +17,7 @@ interface FormResponse{
 // };
 
 export const getCreatedFormJson = async (id: string): Promise<string> => {
+  console.log(id)
   try {
     const requestUrl = process.env.REACT_APP_BASE_URL + "getFormByFormId?id=" + id
     const response = await axios.get<any>(requestUrl)

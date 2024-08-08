@@ -174,11 +174,39 @@ class Application(db.Model):
     class_info = db.relationship('Programme', foreign_keys=[class_group_id])
     emergency_contact_info = db.relationship('EmergencyContact', foreign_keys=[emergency_contact_id])
     
+    def __repr__(self):
+        return f"<Application(id={self.id}, student_id={self.student_id}, class_group_id={self.class_group_id}, is_paid={self.is_paid})>"
+
+
     @classmethod
     def makePayment(cls, application_id, paid):
         application = cls.query.filter_by(id=application_id).one()
         application.is_paid = paid
         db.session.commit()
+        
+    def create_application(cls, data, student_id, class_group_id):
+        new_application = Application(
+            student_id = student_id, 
+            class_group_id = class_group_id, 
+            pick_up_by = data.get('pick_up_by'), 
+            is_paid = data.get('is_paid'), 
+        )
+        db.session.add(new_application)
+        db.session.commit()
+
+        filters = []
+        filters.append(Application.student_id == student_id)
+        filters.append(Application.class_group_id == class_group_id)  
+        application = Application.query.filter(*filters).all()
+        return application
+    
+    emergency_contact_info = db.relationship('EmergencyContact', foreign_keys=[emergency_contact_id])
+
+class ApplicationSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Students
+        load_instance = True
+        sqla_session = db.session
 
 programme_schema = ProgrammeSchema()
 programmes_schema = ProgrammeSchema(many=True)
@@ -186,3 +214,5 @@ programmes_schema = ProgrammeSchema(many=True)
 student_schema = StudentsSchema()
 students_schema = StudentsSchema(many=True)
 
+application_schema = ApplicationSchema()
+applications_schema = ApplicationSchema(many=True)

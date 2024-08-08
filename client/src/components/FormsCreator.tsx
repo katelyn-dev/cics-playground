@@ -137,6 +137,9 @@ const Forms: React.FC = () => {
 
     const classId = selectedProgrammeData.selectedProgramme?.class_group_id
     const formUrl = process.env.REACT_APP_BASE_URL + "getFormIdByClassId?id=" + classId
+    console.log(classId)
+    console.log(formUrl)
+    debugger
     try {
       const response = await axios.get<FormResponse>(formUrl);
       const status = response.status
@@ -157,6 +160,7 @@ const Forms: React.FC = () => {
       const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
       const formId = formResponse.data.form_id
       const createdFormUrl = window.location.host + "/form/" + formId
+      debugger
       setPopupUrl(createdFormUrl); // Set the URL for the popup
       setIsPopupOpen(true); // Open the popup
     }

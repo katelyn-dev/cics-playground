@@ -7,10 +7,29 @@ import { getCreatedFormJson } from "../api/dataService";
 import cicsLogo from '../static/image/cics-logo.png'
 import { Helper } from "./Helper";
 import '../styles/SurveyForm.module.css'
+import axios from "axios";
+import { DisplayProgrammeData } from "./FormsCreator";
+import { ProgrammeData } from "./ProgrammeCreator";
+import { toEmailRequest } from "./PaylaodMapper";
 
 // Initialize SurveyJS styles
 StylesManager.applyTheme("defaultV2");
 
+export interface ProgrammeDetail {
+  class_name_eng: string;
+  class_name_zhhk: string;
+  class_name_zhcn: string;
+  class_group_id: string;
+  class_fee: string;
+  start_time: string;
+  class_end: string;
+}
+
+interface SubmitResponse {
+  id: string;
+  status: string;
+  class_group_id: string;
+}
 
 interface SurveyFormProps {
   id: string;
@@ -52,11 +71,27 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
     survey.locale = locale;
   }
 
-  survey.onComplete.add((sender, options) => {
+  survey.onComplete.add(async (sender, options) => {
     console.log(JSON.stringify(sender.data, null, 3));
-    //1.check email + formId in application, if exist return
-    //2. save students + class + (emergency_contact) in application
-    // const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
+    const request = { "formId":id, ...sender.data }
+    //save student and application
+    const submitUrl = process.env.REACT_APP_BASE_URL + "saveStudent"
+    const submitResponse = await axios.post<SubmitResponse>(submitUrl, request, Helper.postRequestHeader);
+    const applicationId = submitResponse.data.id
+    const classGroupId = submitResponse.data.class_group_id
+    //send confirmation email
+    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?id="+classGroupId
+    const response = await axios.get<any[]>(searchProgrammeUrl);
+    const programmeDetails: ProgrammeDetail[] = response.data
+    const paymentLink = process.env.REACT_APP_BASE_URL + "payment.html?applicationId=" + applicationId
+    const to_email = request.email
+    const to_name = request.firstname + ' ' + request.lastname
+    const emailRequest = toEmailRequest(to_email, to_name, programmeDetails, paymentLink)
+    const emailUrl =  process.env.REACT_APP_BASE_URL + "emailNotification"
+    const emailResponse = await axios.post<SubmitResponse>(emailUrl, emailRequest, Helper.postRequestHeader);
+    if (emailResponse.status == 200) {
+      console.log("email sent")
+    }
   });
 
   return (

@@ -21,10 +21,14 @@ def create_app():
         from app.auth.controllers import mod as auth_module
         from app.programme.controllers import mod as prog_module
         from app.form.controllers import mod as form_module
+        from app.template.controllers import mod as form_template_module
+        from app.payment.controllers import mod as payment_module
 
         # register blueprint
         app.register_blueprint(auth_module)
         app.register_blueprint(prog_module)
         app.register_blueprint(form_module)
+        app.register_blueprint(form_template_module)
+        app.register_blueprint(payment_module)
 
     return app

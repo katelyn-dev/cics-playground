@@ -6,17 +6,20 @@ import TimeRangePicker from './TimeRangePicker';
 import searchLogo from '../static/image/search.png';
 import axios from "axios";
 import Card from "./Card";
+import Popup from "./Popup";
+import { templateToProgrammePayload, toSaveFormRequest } from "./PaylaodMapper";
+import { Helper } from "./Helper";
 
 
 interface SelectedProgrammeData {
   searchWord: string;
-  selectedProgramme: DisplayProgrammeData;
+  selectedProgramme: DisplayProgrammeData | null; // Changed to null initially;
   expectedStartDate: string;
   expectedEndDate: string;
   displayedProgrammes: DisplayProgrammeData[]
 }
 
-interface DisplayProgrammeData {
+export interface DisplayProgrammeData {
   id: string;
   class_name_eng: string;
   class_name_zhcn: string;
@@ -27,33 +30,34 @@ interface DisplayProgrammeData {
   class_end: string;
 }
 
+interface FormResponse {
+  form_id: string;
+}
+
+interface TemplateResponse {
+  form_json: string;
+}
+
 const Forms: React.FC = () => {
   const [filteredOptions, setFilteredOptions] = useState<DisplayProgrammeData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<DisplayProgrammeData[]>([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupUrl, setPopupUrl] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [selectedProgrammeData, setSelectedProgrammeData] = useState<SelectedProgrammeData>({
     searchWord: '',
-    selectedProgramme: {
-      id: "",
-      class_name_eng: "",
-      class_name_zhcn: "",
-      class_name_zhhk: "",
-      target_audience: "",
-      class_group_id: "",
-      start_time: "",
-      class_end: ""
-    },
+    selectedProgramme: null,
     expectedStartDate: '',
     expectedEndDate: '',
     displayedProgrammes: []
   })
 
-  // Fetch options from the server
   useEffect(() => {
-    searchRelatedProgrammes(selectedProgrammeData)
+    // Initialize with an empty search
+    searchRelatedProgrammes(selectedProgrammeData);
   }, []);
 
   const searchRelatedProgrammes = async (data: SelectedProgrammeData) => {
@@ -70,7 +74,6 @@ const Forms: React.FC = () => {
       return displayList;
     } catch (error) {
       console.log(error)
-
       setSearchResults([])
     }
 
@@ -91,27 +94,35 @@ const Forms: React.FC = () => {
     setFilteredOptions(results);
   };
 
-  // Handle option selection
   const handleOptionSelect = (option: DisplayProgrammeData) => {
     setSelectedProgrammeData(prevState => ({
       ...prevState,
-      selectedProgramme: option
-    }))
-    setSearchTerm(option.class_name_eng);
-    setSelectedProgrammeData(prevState => ({
-      ...prevState,
+      selectedProgramme: option,
       searchWord: option.class_name_eng
-    }))
+    }));
+    setSearchTerm(option.class_name_eng);
     setFilteredOptions([option]);
     setIsOpen(false);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log("handlechangfe..")
     const { name, value, type, checked } = e.target
     setSelectedProgrammeData(prevState => ({
       ...prevState,
       [name]: value
     }))
+  }
+
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault()
+    const displayCources = await searchRelatedProgrammes(selectedProgrammeData)
+    if (displayCources && displayCources.length > 0) {
+      setSelectedProgrammeData(prevState => ({
+        ...prevState,
+        displayedProgrammes: displayCources
+      }))
+    }
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -123,8 +134,32 @@ const Forms: React.FC = () => {
         displayedProgrammes: displayCources
       }))
     }
-    console.log(selectedProgrammeData)
-    // Handle form submission (e.g., send data to an API)
+
+    const classId = selectedProgrammeData.selectedProgramme?.class_group_id
+    const formUrl = process.env.REACT_APP_BASE_URL + "getFormIdByClassId?id=" + classId
+    try {
+      const response = await axios.get<FormResponse>(formUrl);
+      const status = response.status
+      if (status === 200) {
+        const formId = response.data.form_id
+        const createdFormUrl = process.env.REACT_APP_HOST + "/form/" + formId
+        setPopupUrl(createdFormUrl); // Set the URL for the popup
+        setIsPopupOpen(true); // Open the popup
+      } 
+    } catch (error) {
+      const targetAudience = selectedProgrammeData.selectedProgramme?.target_audience
+      const templateUrl = process.env.REACT_APP_BASE_URL + 'getTemplate?targetAudience=' + targetAudience
+      const templateResponse = await axios.get<TemplateResponse>(templateUrl);
+      const templateJson = templateResponse.data.form_json
+      const newForm = templateToProgrammePayload(templateJson, selectedProgrammeData.selectedProgramme!)
+      const saveFormUrl = process.env.REACT_APP_BASE_URL + 'createForm'
+      const saveFormRequest = toSaveFormRequest(newForm)
+      const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
+      const formId = formResponse.data.form_id
+      const createdFormUrl = window.location.host + "/form/" + formId
+      setPopupUrl(createdFormUrl); // Set the URL for the popup
+      setIsPopupOpen(true); // Open the popup
+    }
   }
 
   // Handle clicking outside of the dropdown
@@ -156,7 +191,6 @@ const Forms: React.FC = () => {
                     name="selectedProgramme"
                     className={styles.searchBox}
                     type="text"
-                    value={searchTerm}
                     onChange={handleSearchChange}
                     onClick={() => setIsOpen(prev => !prev)}
                     placeholder="Search..."
@@ -213,7 +247,16 @@ const Forms: React.FC = () => {
                     />
                   </div>
                   <div className={styles.datePickerContainerSearchButton} >
-                    <SubmitButton name="searchProgramme" type="submit">Search</SubmitButton>
+                    {/* <SubmitButton name="searchProgramme"
+                      data-button-type="searchSubmit"
+                      type="submit" >Search</SubmitButton> */}
+                    <button
+                      type="button"
+                      className={styles.submitButton}
+                      onClick={handleSearch}
+                    >
+                      Search
+                    </button>
                   </div>
                 </div>
 
@@ -222,23 +265,39 @@ const Forms: React.FC = () => {
 
               {/* Display search results */}
               <div className={styles.searchResultsContainer}>
-                {/* <h2 className={styles.resultsHeader}>Search Results</h2> */}
                 {selectedProgrammeData.displayedProgrammes.length > 0 ? (
                   <ul>
                     <div className={styles.cardContainer}>
                       {selectedProgrammeData.displayedProgrammes.map(programme => (
-                        <Card key={programme.class_group_id}
-                          onSelect={() => handleSubmit} {...programme} />
-                      ))
-                      }
+                        <Card
+                          key={programme.class_group_id}
+                          {...programme}
+                          onSelect={(id) => {
+                            const selected = selectedProgrammeData.displayedProgrammes.find(p => p.class_group_id === id);
+                            if (selected) {   
+                              setSelectedProgrammeData(prevState => ({
+                                ...prevState,
+                                selectedProgramme: selected
+                              }));
+                            }
+                          }}
+                        />
+                      ))}
                     </div>
                   </ul>
                 ) : (
                   <p className={styles.noResults}>No results found</p>
                 )}
               </div>
-
             </form>
+
+            <Popup
+              isOpen={isPopupOpen}
+              onClose={() => setIsPopupOpen(false)}
+              title="Here you go!"
+              content="Here is your QR code and URL"
+              url={popupUrl}
+            />
           </div>
         </div>
       </div>

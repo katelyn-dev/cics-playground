@@ -1,44 +1,81 @@
-import React, {useEffect} from "react";
-import {Survey} from "survey-react-ui";
-import {Model, StylesManager} from "survey-core";
+import React, { useEffect, useState } from "react";
+import { Survey } from "survey-react-ui";
+import {Model, Question, StylesManager} from "survey-core";
 import 'survey-core/defaultV2.min.css';
-import {useQuery} from "react-query";
-import {getCreatedFormJson, getCreatedFormsJson} from "../api/dataService";
+import { useQuery } from "react-query";
+import { getCreatedFormJson } from "../api/dataService";
+import cicsLogo from '../static/image/cics-logo.png'
+import { Helper } from "./Helper";
+import '../styles/SurveyForm.module.css'
 
 // Initialize SurveyJS styles
 StylesManager.applyTheme("defaultV2");
 
 
 interface SurveyFormProps {
-  id: number;
+  id: string;
 }
 
-const SurveyForm: React.FC<SurveyFormProps> = ({id}) => {
+const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
   console.log(`number: ${id}`)
   const { data, error, isLoading } = useQuery<Object, Error>(
-    ["getCreatedFormsJson", id], // Include id in the query key
-    () => getCreatedFormsJson(id) // Pass id via the closure
+    ["getCreatedFormJson", id], // Include id in the query key
+    () => getCreatedFormJson(id) // Pass id via the closure
   );
+  const [bgimage, setBgimage] = useState<string>('');
+  const [locale, setLocale] = useState<string>('default');
 
-  useEffect(() => {
-    if(isLoading || !data) return;
-
-    const survey = new Model(data);
-    survey.locale = "zh-cn";
-    survey.language = "zh-cn";
-
-    survey.onComplete.add((sender, options) => {
-      console.log(JSON.stringify(sender.data, null, 3));
-    });
-  }, []);
+  useEffect(() => { 
+    setBgimage(Helper.getRandomBackground())
+  }, [])
+  // useEffect(() => {
+  //   if (isLoading || !data) return;
 
   const survey = new Model(data);
-  survey.locale = "zh-cn";
-  survey.language = "zh-cn";
+  survey.locale = locale
+  survey.logo = cicsLogo
+  survey.backgroundImage = bgimage
+
+
+  const renderButton = (text: string, func: ()=> void, canRender: boolean) => {
+    if(!canRender) return undefined;
+
+    return (
+      <button className="navigation-button" onClick={func}>
+        {text}
+      </button>
+    )
+  }
+
+  const changeLanguage = (locale: string) => {
+    setLocale(locale);
+    survey.locale = locale;
+  }
+
   survey.onComplete.add((sender, options) => {
     console.log(JSON.stringify(sender.data, null, 3));
+    //1.check email + formId in application, if exist return
+    //2. save students + class + (emergency_contact) in application
+    // const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
   });
-  return (<Survey model={survey} />);
+
+  return (
+    <main>
+      <div className="navigation-block">
+        <div className="navigation-buttons-container">
+      {
+        renderButton("Traditional Chinese", ()=> {changeLanguage("zh-tw")}, true)
+      }
+          {
+            renderButton("Simplify Chinese", () => {changeLanguage("zh-cn")}, true)
+          }
+          {
+            renderButton("English", () => {changeLanguage("default")}, true)
+          }
+        </div>
+      </div>
+      <Survey styles={{ padding: '15rem' }} model={survey} />
+    </main>);
 }
 
 export default SurveyForm;

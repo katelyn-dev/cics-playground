@@ -89,6 +89,7 @@ def email_notification():
 def get_form_id_by_class_id():
   if "id" in request.args:
     id = request.args['id']
+    print(id)
     form = Form.query.filter_by(class_group_id=id).first()
     if form:
         return make_response(jsonify({'form_id': form.form_id}), 200)

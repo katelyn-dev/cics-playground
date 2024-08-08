@@ -1,8 +1,8 @@
 import {SurveyCreator} from "survey-creator-react";
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import 'survey-core/defaultV2.min.css';
 import 'survey-creator-core/survey-creator-core.min.css';
-import {Action, surveyLocalization} from "survey-core";
+import {Action, IElement, surveyLocalization} from "survey-core";
 import {getCreatedFormJson, translateText} from "../api/dataService";
 import {removeSurveyToolBoxItems, supportedLanguage, surveyOptions} from "../settings/surveyCreatorOptions";
 import {useQuery} from "react-query";
@@ -15,11 +15,10 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
   console.log(`number: ${id}`)
   const containerRef = useRef<HTMLDivElement | null>(null);
   const creatorRef = useRef<SurveyCreator | null>(null);
-  const { data, error, isLoading } = useQuery<Object, Error>(
+  const { data, error, isLoading } = useQuery<string, Error>(
     ["getCreatedFormJson", id], // Include id in the query key
     () => getCreatedFormJson(id) // Pass id via the closure
   );
-
 
   // Function to download JSON as a file
   const downloadJsonFile = (json: any, filename: string) => {
@@ -46,8 +45,6 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
     translatedJSON.title[targetLocale] = await translateText(json.title?.default ?? json.title, targetLocale);
     translatedJSON.description[targetLocale] = await translateText(json.description?.default ?? json.description, targetLocale);
 
-    console.log(`${targetLocale}: ${translatedJSON.title[targetLocale]}`)
-    console.log(`${targetLocale}: ${translatedJSON.description[targetLocale]}`)
 
     translatedJSON.pages = await Promise.all(json.pages.map(async(page: any) => ({
       ...page,
@@ -189,7 +186,7 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
     });
     surveyLocalization.supportedLocales = supportedLanguage;
     creatorRef.current = newCreator;
-    creatorRef.current.JSON = data
+    creatorRef.current.JSON = data;
     creatorRef.current?.render("surveyCreatorContainer");
 
     creatorRef.current?.onElementAllowOperations.add(function (sender, options) {
@@ -197,25 +194,27 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
         //options.allowEdit = false;
     })
     creatorRef.current?.onSurveyInstanceCreated.add(function (sender, options) {
+      console.log("Survey instance created")
       const spans = document.querySelectorAll('span');
-      if(creatorRef.current?.JSON.elements?.allowEdit === false) {
-        
-      }
-      // Loop through each span element
-      spans.forEach((span) => {
-        // Check if the text content is "ui"
-        if (span?.textContent === "Username") {
-          // Disable contentEditable
-          span.contentEditable = "false";
-        }
-    })})
+      JSON.parse(data)?.pages.forEach((page: any) => {
+        page.elements.forEach((element: any) => {
+          console.log("called")
+          if (element?.isLocked) {
+            console.log(element)
+            // Loop through each span element
+            spans.forEach((span) => {
+              // Check if the text content is "ui"
+              if (span?.textContent === element.title.default) {
+                // Disable contentEditable
+                span.contentEditable = "false";
+              }
+            })
+          }
 
-    return () => {
-      if(creatorRef?.current) {
-        creatorRef.current.dispose();
-        creatorRef.current = null;
-      }
-    }
+        })
+      })
+      creatorRef.current?.onSurveyInstanceCreated.clear()
+    })
   }, [data, isLoading]);
 
   return (

@@ -17,7 +17,18 @@ export const removeSurveyToolBoxItems = [
   "html",
   "expression",
   "pages",
-  "comment"
+  "comment",
+  "file",
+  "imagepicker",
+  "multipletext",
+  "matrix",
+  "matrixdropdown",
+  "matrixdynamic",
+  "image",
+  "multipletext",
+  "signaturepad",
+  "tagbox",
+
 ]
 
 export const supportedLanguage = ["en", "zh-cn", "zh-tw"]

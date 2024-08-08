@@ -58,20 +58,20 @@ const Dashboard = () => {
     startDate: "",
     endDate: "",
   });
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8080/dashboard");
-        const { totalStudents, totalCourses, totalForms } = response.data;
-        setTotalStudents(totalStudents);
-        setTotalCourses(totalCourses);
-        setTotalForms(totalForms);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const url = process.env.REACT_APP_BASE_URL + "dashboard";
+      const response = await axios.get(url);
+      const { totalStudents, totalCourses, totalForms } = response.data;
+      setTotalStudents(totalStudents);
+      setTotalCourses(totalCourses);
+      setTotalForms(totalForms);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -81,7 +81,7 @@ const Dashboard = () => {
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await searchStudents();
     // console.log(timeslot.startDate);
@@ -91,7 +91,9 @@ const Dashboard = () => {
     const { startDate, endDate } = timeslot;
     const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}/searchProgramme?startDate=${startDate}&endDate=${endDate}`;
     try {
-      const response = await axios.get<DisplayProgrammeData[]>(searchProgrammeUrl);
+      const response = await axios.get<DisplayProgrammeData[]>(
+        searchProgrammeUrl
+      );
       const displayList = response.data;
       setSelectedProgrammeData((prev) => ({
         ...prev,

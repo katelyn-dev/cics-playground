@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, make_response, request
-from sqlalchemy import cast, func, not_
+from sqlalchemy import cast, func, not_, and_
 
 from app import db
-from .models import Application, Programme, Students, programme_schema, programmes_schema, student_schema
+from .models import Programme, programme_schema, programmes_schema, Application, Students, student_schema, students_schema, EmergencyContact
 from datetime import datetime
+import json
 
 mod = Blueprint('programmes', __name__)
 
@@ -218,3 +219,70 @@ def create_application(data, student_id, class_group_id):
     application_id = application_model.create_application(data, student_id, class_group_id)
     print(application_id)
     return application_id
+# Usage: searchStudent?email=chantaiman@email.com&firstname=Tai&lastname=CHAN
+@mod.route("/searchStudent", methods=["GET"])
+def searchStudent():
+    query_params = request.args
+    try:
+        filters = Students.apply_filters(query_params)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+    if filters:
+        # Apply filters to query
+        students = Students.query.filter(*filters).all()
+        if students:
+            return make_response(students_schema.dump(students), 200)
+        return make_response(jsonify({'message': 'student not found'}), 404)
+    else:
+        return jsonify({"error": "Missing query parameters"}), 400
+
+# Usage: /getApplicationDetails --> to get all table records that left join to application
+# /getApplicationDetails?filters={"students":{"gender":"M"}}&output_fields=students.firstname&output_fields=programme.class_name_eng
+@mod.route('/getApplicationDetails', methods=['GET'])
+def getApplicationDetails():
+    filters = request.args.get('filters', default="{}")
+    output_fields = request.args.getlist('output_fields')
+
+    # Parse filters from JSON string to dictionary
+    filters = json.loads(filters)
+
+    # Initialize the query with a left join
+    query = db.session.query(Application).outerjoin(Application.student).outerjoin(Application.class_info).outerjoin(Application.emergency_contact_info)
+
+    # Apply filters
+    if filters:
+        filter_conditions = []
+        for table, conditions in filters.items():
+            for column, value in conditions.items():
+                filter_conditions.append(getattr(globals()[table.capitalize()], column) == value)
+        query = query.filter(and_(*filter_conditions))
+
+    # Define the output fields
+    if output_fields:
+        selected_fields = []
+        for field in output_fields:
+            table, column = field.split('.')
+            selected_fields.append(getattr(globals()[table.capitalize()], column))
+        query = query.with_entities(*selected_fields)
+    else:
+        query = query.with_entities(Application, Students, Programme, EmergencyContact)
+
+    # Fetch the results
+    results = query.all()
+
+    # Serialize the results
+    output = []
+    if output_fields:
+        for result in results:
+            output.append({field: getattr(result, field.split('.')[-1]) for field in output_fields})
+    else:
+        for application, student, programme, emergency_contact in results:
+            output.append({
+                'application': {key: value for key, value in application.__dict__.items() if key != '_sa_instance_state'},
+                'student': {key: value for key, value in (student.__dict__ if student else {}).items() if key != '_sa_instance_state'},
+                'programme': {key: value for key, value in (programme.__dict__ if programme else {}).items() if key != '_sa_instance_state'},
+                'emergency_contact': {key: value for key, value in (emergency_contact.__dict__ if emergency_contact else {}).items() if key != '_sa_instance_state'}
+            })
+
+    return jsonify(output)

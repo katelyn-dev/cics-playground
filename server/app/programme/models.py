@@ -1,6 +1,6 @@
 from app import db, ma
 from sqlalchemy.dialects.mysql import JSON
-from sqlalchemy import func
+from sqlalchemy import func, and_
 from datetime import datetime
 
 class Programme(db.Model):
@@ -92,15 +92,81 @@ class Students(db.Model):
         return new_id
 
 class StudentsSchema(ma.SQLAlchemyAutoSchema):
+    #stu_comment = db.Column(db.String(255))
+    start_time = db.Column(db.DateTime,nullable=True)
+    last_modified_time = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
+
+    @classmethod
+    def add_student(cls, data):
+        student_data = {key: value for key, value in data.items() if hasattr(cls, key)}
+        
+        new_student = cls(**student_data)
+        db.session.add(new_student)
+        db.session.commit()
+
+        return new_student.id
+    
+    @classmethod
+    def apply_filters(cls, query_params):
+        filters = []
+
+        email_str = query_params.get('email')
+        if email_str:
+            filters.append(cls.email.like(f"%{email_str}%"))
+
+        firstname_str = query_params.get('firstname')
+        lastname_str = query_params.get('lastname')
+        if firstname_str and lastname_str:
+            filters.append(and_(
+                cls.firstname.like(f"%{firstname_str}%"),
+                cls.lastname.like(f"%{lastname_str}%")
+            ))
+
+        return filters
+    
+class StudentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Students
         load_instance = True
         sqla_session = db.session
 
+class EmergencyContact(db.Model):
+    __tablename__ = 'emergency_contacts'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    application_id = db.Column(db.Integer, nullable=False)
+    student_id = db.Column(db.Integer, nullable=False)
+    guardian_full_name = db.Column(db.String(255))
+    guardian_relationship = db.Column(db.String(255))
+    emergency_contact_name = db.Column(db.String(255))
+    emergency_relationship = db.Column(db.String(255))
+    emergency_phone = db.Column(db.String(255))
+
+    @classmethod
+    def add_emergency_contact(cls, data):
+        contact_data = {key: value for key, value in data.items() if hasattr(cls, key)}
+        
+        new_contact = cls(**contact_data)
+        db.session.add(new_contact)
+        db.session.commit()
+
+        return new_contact.id
+    
+    @classmethod
+    def apply_filters(cls, query_params):
+        filters = []
+
+        student_id = query_params.get('student_id')
+        if student_id:
+            filters.append(cls.student_id == student_id)
+
+        return filters
+
 class Application(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String(255), db.ForeignKey('students.id'))
     class_group_id = db.Column(db.String(255), db.ForeignKey('classes.class_group_id'))
+    emergency_contact_id = db.Column(db.String(255), db.ForeignKey('emergency_contacts.id'))
     pick_up_by = db.Column(db.String(255))
     last_modified_time = db.Column(db.BigInteger)
     is_paid = db.Column(db.String(255))
@@ -121,9 +187,11 @@ class Application(db.Model):
         db.session.add(new_application)
         db.session.commit()
     
+    emergency_contact_info = db.relationship('EmergencyContact', foreign_keys=[emergency_contact_id])
 
 programme_schema = ProgrammeSchema()
 programmes_schema = ProgrammeSchema(many=True)
 
 student_schema = StudentsSchema()
 students_schema = StudentsSchema(many=True)
+

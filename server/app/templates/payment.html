@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+</head>
+<body>
+    <h1>Payment Page</h1>
+    <form action="/process_payment" method="get">
+        <input type="hidden" name="applicationId" value="{{ applicationId }}">
+        <button type="submit">Proceed with Payment</button>
+    </form>
+</body>
+</html>

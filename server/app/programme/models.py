@@ -172,22 +172,13 @@ class Application(db.Model):
     is_paid = db.Column(db.String(255))
     student = db.relationship('Students', foreign_keys=[student_id])
     class_info = db.relationship('Programme', foreign_keys=[class_group_id])
+    emergency_contact_info = db.relationship('EmergencyContact', foreign_keys=[emergency_contact_id])
     
     @classmethod
-    def create_application(cls, data, student_id, class_group_id):
-        max_id = db.session.query(func.max(cls.id)).scalar()  # Get the maximum ID value
-        new_id = (max_id or 0) + 1 
-        new_application = Application(
-            id = new_id,
-            student_id = student_id, 
-            class_group_id = class_group_id, 
-            pick_up_by = data.get('pick_up_by'), 
-            is_paid = data.get('is_paid'), 
-        )
-        db.session.add(new_application)
+    def makePayment(cls, application_id, paid):
+        application = cls.query.filter_by(id=application_id).one()
+        application.is_paid = paid
         db.session.commit()
-    
-    emergency_contact_info = db.relationship('EmergencyContact', foreign_keys=[emergency_contact_id])
 
 programme_schema = ProgrammeSchema()
 programmes_schema = ProgrammeSchema(many=True)

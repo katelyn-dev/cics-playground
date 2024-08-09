@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Survey } from "survey-react-ui";
-import {Model, Question, StylesManager} from "survey-core";
+import {Model, Question, StylesManager, SurveyModel} from "survey-core";
 import 'survey-core/defaultV2.min.css';
 import { useQuery } from "react-query";
 import { getCreatedFormJson } from "../api/dataService";
@@ -47,16 +47,8 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
   );
   const [bgimage, setBgimage] = useState<string>('');
   const [locale, setLocale] = useState<string>('default');
-
-  useEffect(() => { 
-    setBgimage(Helper.getRandomBackground())
-  }, [])
-
-  const survey = new Model(data);
-  survey.locale = locale
-  survey.logo = cicsLogo
-  survey.backgroundImage = bgimage
-
+  const surveyRef = useRef<SurveyModel | null>(null);
+  const [surveyModel, setSurveyModel] = useState<SurveyModel | null>(null);
 
   const renderButton = (text: string, func: ()=> void, canRender: boolean) => {
     if(!canRender) return undefined;
@@ -68,33 +60,57 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
     )
   }
 
+
   const changeLanguage = (locale: string) => {
     setLocale(locale);
-    survey.locale = locale;
+    if(!surveyRef?.current) return;
+    surveyRef.current.locale = locale;
   }
 
-survey.onComplete.add(async (sender, optipons) => {
-    console.log(JSON.stringify(sender.data, null, 3));
-    const request = { "formId":id, ...sender.data }
-    //save student and application
-    const submitUrl = process.env.REACT_APP_BASE_URL + "saveStudent"
-    const submitResponse = await axios.post<SubmitResponse>(submitUrl, request, Helper.postRequestHeader);
-    const applicationId = submitResponse.data.id
-    const classGroupId = submitResponse.data.class_group_id
-    //send confirmation email
-    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?id="+ classGroupId
-    const response = await axios.get<any[]>(searchProgrammeUrl);
-    const programmeDetails: ProgrammeDetail[] = response.data
-    const paymentLink = process.env.REACT_APP_BASE_URL + "payment.html?applicationId=" + applicationId
-    const to_email = request.email
-    const to_name = request.firstname + ' ' + request.lastname
-    const emailRequest = toEmailRequest(to_email, to_name, programmeDetails, paymentLink)
-    const emailUrl =  process.env.REACT_APP_BASE_URL + "emailNotification"
-    const emailResponse = await axios.post<SubmitResponse>(emailUrl, emailRequest, Helper.postRequestHeader);
-    if (emailResponse.status == 200) {
-      console.log("email sent")
+  useEffect(() => { 
+    setBgimage(Helper.getRandomBackground())
+  }, [])
+
+  useEffect(() => {
+    if(!data || isLoading) return;
+
+    try {
+      const survey = new Model(data);
+      survey.locale = locale
+      survey.logo = cicsLogo
+      survey.backgroundImage = bgimage
+
+      survey.onComplete.add(async (sender, optipons) => {
+        console.log(JSON.stringify(sender.data, null, 3));
+        const request = {"formId": id, ...sender.data}
+        //save student and application
+        const submitUrl = process.env.REACT_APP_BASE_URL + "saveStudent"
+        const submitResponse = await axios.post<SubmitResponse>(submitUrl, request, Helper.postRequestHeader);
+        const applicationId = submitResponse.data.id
+        const classGroupId = submitResponse.data.class_group_id
+        //send confirmation email
+        const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?id=" + classGroupId
+        const response = await axios.get<any[]>(searchProgrammeUrl);
+        const programmeDetails: ProgrammeDetail[] = response.data
+        const paymentLink = process.env.REACT_APP_BASE_URL + "payment.html?applicationId=" + applicationId
+        const to_email = request.email
+        const to_name = request.firstname + ' ' + request.lastname
+        const emailRequest = toEmailRequest(to_email, to_name, programmeDetails, paymentLink)
+        const emailUrl = process.env.REACT_APP_BASE_URL + "emailNotification"
+        const emailResponse = await axios.post<SubmitResponse>(emailUrl, emailRequest, Helper.postRequestHeader);
+        if (emailResponse.status == 200) {
+          console.log("email sent")
+        }
+      });
+      console.log(`called`)
+      setSurveyModel(survey);
+      surveyRef.current = survey;
+
+    } catch (error) {
+      console.error(error);
     }
-  });
+
+  }, [data, isLoading]);
 
   return (
     <main>
@@ -111,7 +127,7 @@ survey.onComplete.add(async (sender, optipons) => {
           }
         </div>
       </div>
-      <Survey styles={{ padding: '15rem' }} model={survey} />
+      {surveyModel && <Survey styles={{ padding: "15rem" }} model={surveyModel} />}
     </main>);
 }
 

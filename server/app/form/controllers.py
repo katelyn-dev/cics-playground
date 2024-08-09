@@ -31,25 +31,27 @@ def create_form():
 
   return jsonify({"form_id": form_id, "message": f"Form created successfully with form_id: {form_id}"}), 201
 
-
 @mod.route("/updateForm", methods=['POST'])
 def update_form():
-  data = request.get_json()
+    data = request.get_json()
 
-  if not isinstance(data, dict):
-    return jsonify({"error": "Invalid data format, expected a dictionary"}), 400
-  
-  form_id = data.get('form_id')
-  form_json = str(data.get('form_json'))
-
-  form = Form.query.filter_by(form_id=form_id)
-  if not form:
-      return jsonify({"error": f"No form found with form_id: {form_id}"}), 404
-
-  Form.query.update(Form.form_json).where(Form.id == form_id).values(form_json)
-  db.session.commit()
-  print("hi")
-  return jsonify({"form_id": form_id, "message": "Form updated successfully"}), 200
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid data format, expected a dictionary"}), 400
+    
+    form_id = data.get('form_id')
+    if not form_id:
+        return jsonify({"error": "Missing form_id"}), 400
+    
+    updated_form = Form.update_form(form_id, data)
+    
+    if updated_form:
+        return jsonify({
+            "form_id": updated_form.form_id,
+            "message": "Form updated successfully",
+            "updated_form": form_schema.dump(updated_form)
+        }), 200
+    else:
+        return jsonify({"error": f"No form found with form_id: {form_id}"}), 404
 
 
 @mod.route("/submitForm", methods=['POST'])

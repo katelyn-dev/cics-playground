@@ -74,6 +74,21 @@ class Form(db.Model):
             filters.append(cls.is_active == (is_active.lower() == 'true'))
 
         return filters
+        
+    @classmethod
+    def update_form(cls, form_id, updated_data):
+        form_to_update = cls.query.filter_by(form_id=form_id).first()
+
+        if not form_to_update:
+            return None  # or raise an Exception like raise ValueError("Form not found")
+
+        form_to_update.form_json = str(updated_data.get('form_json', form_to_update.form_json))
+        form_to_update.last_modified_time = datetime.now()
+
+        db.session.commit()
+
+        return form_to_update
+    
 
     def __repr__(self):
         rep = 'Form(' + str(self.form_id) + ')'

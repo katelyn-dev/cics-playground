@@ -203,7 +203,6 @@ const Forms: React.FC = () => {
           <div className={styles.leftSection}>
             <p>&nbsp;</p>
             <img src={searchLogo} alt="search" style={{ width: '380px', height: 'auto' }} />
-
             <h1 className={styles.formHeader}>Search a Programme</h1>
             <form className={styles.form} onSubmit={handleSubmit}>
               <div className={styles.formGroup} ref={dropdownRef} style={{ position: 'relative', width: '95%' }}>

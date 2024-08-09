@@ -133,7 +133,6 @@ const StudentsList = () => {
           <SubmitButton type="submit">Submit</SubmitButton>
           <div>&nbsp;</div>
           <div>&nbsp;</div>
-          <div>&nbsp;</div>
         </form>
 
         <table>

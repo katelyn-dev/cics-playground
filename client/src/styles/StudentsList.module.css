@@ -13,6 +13,12 @@
   margin-bottom: 40px;
 }
 
+.hrRounded {
+  border-top: 5px solid #b4886f;
+  border-radius: 5px;
+  width: 100%;
+}
+
 .label {
   display: block;
   margin-bottom: 0.5rem;

@@ -90,12 +90,7 @@ class Students(db.Model):
         db.session.commit()
         print(new_id)
         return new_id
-
-class StudentsSchema(ma.SQLAlchemyAutoSchema):
-    #stu_comment = db.Column(db.String(255))
-    start_time = db.Column(db.DateTime,nullable=True)
-    last_modified_time = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
-
+    
     @classmethod
     def add_student(cls, data):
         student_data = {key: value for key, value in data.items() if hasattr(cls, key)}
@@ -123,6 +118,11 @@ class StudentsSchema(ma.SQLAlchemyAutoSchema):
             ))
 
         return filters
+
+class StudentsSchema(ma.SQLAlchemyAutoSchema):
+    #stu_comment = db.Column(db.String(255))
+    start_time = db.Column(db.DateTime,nullable=True)
+    last_modified_time = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     
 class StudentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

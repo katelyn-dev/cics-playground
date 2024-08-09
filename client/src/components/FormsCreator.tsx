@@ -198,6 +198,7 @@ const Forms: React.FC = () => {
                     onChange={handleSearchChange}
                     onClick={() => setIsOpen(prev => !prev)}
                     placeholder="Search..."
+                    value={selectedProgrammeData.searchWord}
                   />
                   <span
                     className={styles.dropdownIcon}

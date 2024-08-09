@@ -3,6 +3,18 @@
   padding: 0rem !important;
 }
 
+.surveyjs-branding {
+  display: none !important;
+}
+
+.svc-creator__non-commercial-text {
+  display: none !important;
+}
+
+.svc-creator__banner{
+  display: none !important;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

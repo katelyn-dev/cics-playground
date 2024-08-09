@@ -11,6 +11,7 @@ import axios from "axios";
 import { DisplayProgrammeData } from "./FormsCreator";
 import { ProgrammeData } from "./ProgrammeCreator";
 import { toEmailRequest } from "./PaylaodMapper";
+import {textAlign} from "html2canvas/dist/types/css/property-descriptors/text-align";
 
 // Initialize SurveyJS styles
 StylesManager.applyTheme("defaultV2");
@@ -66,6 +67,26 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
     if(!surveyRef?.current) return;
     surveyRef.current.locale = locale;
   }
+
+  useEffect(() => {
+    if (surveyModel) {
+      // Create a new <style> element
+      const styleElement = document.createElement("style");
+      styleElement.innerHTML = `
+        .sd-question__title {
+          text-align: left !important;
+        }
+      `;
+
+      // Append the <style> element to the document's <head>
+      document.head.appendChild(styleElement);
+
+      // Clean up the <style> element when the component is unmounted
+      return () => {
+        document.head.removeChild(styleElement);
+      };
+    }
+  }, [surveyModel]);
 
   useEffect(() => { 
     setBgimage(Helper.getRandomBackground())

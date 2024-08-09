@@ -76,7 +76,7 @@ class Form(db.Model):
         return filters
 
     def __repr__(self):
-        rep = 'Form(' + str(self.class_group_id) + ',' + self.class_name_eng + ')'
+        rep = 'Form(' + str(self.form_id) + ')'
         return rep
     
 class FormSchema(ma.SQLAlchemyAutoSchema):

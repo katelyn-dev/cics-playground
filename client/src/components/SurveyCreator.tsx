@@ -6,6 +6,8 @@ import {Action, IElement, surveyLocalization} from "survey-core";
 import {getCreatedFormJson, translateText} from "../api/dataService";
 import {removeSurveyToolBoxItems, supportedLanguage, surveyOptions} from "../settings/surveyCreatorOptions";
 import {useQuery} from "react-query";
+import axios from "axios";
+import { Helper } from "./Helper";
 
 interface SurveyFormProps {
   id: string;
@@ -133,7 +135,17 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
       creatorRef.current.JSON = result;
       // Download the translated JSON as a file
       downloadJsonFile(result, "translated-survey.json");
-
+      //update db json //updateForm post 
+      const form_id = id
+      const form_json = JSON.stringify(result)
+      const request = {
+        form_id: form_id,
+        form_json: form_json
+      }
+      const updateFormUrl = `${process.env.REACT_APP_BASE_URL}/updateForm?`
+      const response = await axios.post<any[]>(updateFormUrl, request, Helper.postRequestHeader);
+      const data = response.data
+      console.log(data)
       alert(JSON.stringify(result))
     }
   })
@@ -196,7 +208,14 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
     creatorRef.current?.onSurveyInstanceCreated.add(function (sender, options) {
       console.log("Survey instance created")
       const spans = document.querySelectorAll('span');
-      JSON.parse(data)?.pages.forEach((page: any) => {
+      console.log(data)
+      let submitData;
+      if (typeof data === 'string') {
+        submitData = JSON.parse(data)
+      } else {
+        submitData = data
+      }
+      submitData?.pages.forEach((page: any) => {
         page.elements.forEach((element: any) => {
           console.log("called")
           if (element?.isLocked) {

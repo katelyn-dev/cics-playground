@@ -226,20 +226,32 @@ def create_application(data, student_id, class_group_id):
 # Usage: searchStudent?email=chantaiman@email.com&firstname=Tai&lastname=CHAN
 @mod.route("/searchStudent", methods=["GET"])
 def searchStudent():
-    query_params = request.args
-    try:
-        filters = Students.apply_filters(query_params)
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+    email = request.args.get('email')
+    phone_num = request.args.get('phone_num')
+    lastname = request.args.get('lastname')
+    firstname = request.args.get('firstname')
 
-    if filters:
-        # Apply filters to query
-        students = Students.query.filter(*filters).all()
-        if students:
-            return make_response(students_schema.dump(students), 200)
-        return make_response(jsonify({'message': 'student not found'}), 404)
+    # Build query filters dynamically
+    filters = []
+    if email:
+        filters.append(Students.email.like(f"%{email}%")) 
+    if phone_num:
+        filters.append(Students.phone_number.like(f"%{phone_num}%")) 
+    if lastname:
+        filters.append(Students.lastname.like(f"%{lastname}%")) 
+    if firstname:
+        filters.append(Students.firstname.like(f"%{firstname}%")) 
+
+    query = Students.query.filter(*filters)
+    print("Constructed Query:", str(query))
+    # Execute the query
+    students = query.all()
+
+    if students:
+        return make_response(students_schema.dump(students), 200)
     else:
-        return jsonify({"error": "Missing query parameters"}), 400
+        return make_response(jsonify([]), 200)
+    
 
 # Usage: /getApplicationDetails --> to get all table records that left join to application
 # /getApplicationDetails?filters={"students":{"gender":"M"}}&output_fields=students.firstname&output_fields=programme.class_name_eng

@@ -1,31 +1,35 @@
 "use client";
 import React, { useEffect, useState, FormEvent, ChangeEvent } from "react";
 import axios from "axios";
-import styles from "../styles/Dashboard.module.css";
+import styles from "../styles/StudentsList.module.css";
+import SubmitButton from "./SubmitButton";
 
 interface StudentInfo {
   lastname: string;
   firstname: string;
   email: string;
+  phone_number: string;
 }
 
 const StudentsList = () => {
-  const [searchFields, setSearchFields] = useState({
+  const [searchStudent, setSearchStudent] = useState<StudentInfo>({
     firstname: "",
     lastname: "",
     email: "",
+    phone_number: ""
   });
 
-  const [students, setStudents] = useState<StudentInfo[]>([]);
+  // const [students, setStudents] = useState<StudentInfo[]>([]);
   const [displayedStudents, setDisplayedStudents] = useState<StudentInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+
+  // //initial load, ok can load
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = process.env.REACT_APP_BASE_URL + "students";
+        const url = process.env.REACT_APP_BASE_URL + "searchStudent";
         const response = await axios.get(url);
-        setStudents(response.data);
         setDisplayedStudents(response.data); // Initially display all students
       } catch (error) {
         console.error("Error fetching students data:", error);
@@ -35,26 +39,31 @@ const StudentsList = () => {
   }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault()
     const { name, value } = e.target;
-    setSearchFields((prevState) => ({
+    setSearchStudent((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const filteredStudents = students.filter(
-      (student) =>
-        (searchFields.firstname
-          ? student.firstname.includes(searchFields.firstname)
-          : true) &&
-        (searchFields.lastname
-          ? student.lastname.includes(searchFields.lastname)
-          : true) &&
-        (searchFields.email ? student.email.includes(searchFields.email) : true)
-    );
-    setDisplayedStudents(filteredStudents);
+    try {
+      const email = searchStudent.email ? "&email=" + searchStudent.email : ""
+      const phone_num = searchStudent.phone_number ? "&phone_num=" + searchStudent.phone_number : ""
+      const lastname = searchStudent.lastname ? "&lastname=" + searchStudent.lastname : ""
+      const firstname = searchStudent.firstname ? "&firstname=" + searchStudent.firstname : ""
+      const url = process.env.REACT_APP_BASE_URL + "searchStudent?"
+        + email
+        + phone_num
+        + lastname
+        + firstname
+      const response = await axios.get(url);
+      setDisplayedStudents(response.data); // Initially display all students
+    } catch (error) {
+      console.error("Error fetching students data:", error);
+    }
     setCurrentPage(1); // Reset to the first page after filtering
   };
 
@@ -73,28 +82,58 @@ const StudentsList = () => {
     return (
       <main className={styles.container}>
         <form className={styles.form} onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="firstname"
-            value={searchFields.firstname}
-            onChange={handleChange}
-            placeholder="First Name"
-          />
-          <input
-            type="text"
-            name="lastname"
-            value={searchFields.lastname}
-            onChange={handleChange}
-            placeholder="Last Name"
-          />
-          <input
-            type="email"
-            name="email"
-            value={searchFields.email}
-            onChange={handleChange}
-            placeholder="Email"
-          />
-          <button type="submit">Search</button>
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>First Name</label>
+              <input
+                className={styles.input}
+                type="text"
+                name="firstname"
+                value={searchStudent.firstname}
+                onChange={handleChange}
+                placeholder="First Name"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Last Name</label>
+              <input
+                className={styles.input}
+                type="text"
+                name="lastname"
+                value={searchStudent.lastname}
+                onChange={handleChange}
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Email</label>
+              <input
+                className={styles.input}
+                type="text"
+                name="email"
+                value={searchStudent.email}
+                onChange={handleChange}
+                placeholder="Email"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Phone Number</label>
+              <input
+                className={styles.input}
+                type="text"
+                name="phone_number"
+                value={searchStudent.phone_number}
+                onChange={handleChange}
+                placeholder="Phone Number"
+              />
+            </div>
+          </div>
+          <SubmitButton type="submit">Submit</SubmitButton>
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
+          <div>&nbsp;</div>
         </form>
 
         <table>
@@ -103,6 +142,7 @@ const StudentsList = () => {
               <th>First Name</th>
               <th>Last Name</th>
               <th>Email</th>
+              <th>Phone Number</th>
             </tr>
           </thead>
           <tbody>
@@ -112,6 +152,7 @@ const StudentsList = () => {
                   <td>{student.firstname}</td>
                   <td>{student.lastname}</td>
                   <td>{student.email}</td>
+                  <td>{student.phone_number}</td>
                 </tr>
               ))
             ) : (
@@ -122,10 +163,16 @@ const StudentsList = () => {
           </tbody>
         </table>
 
-        <button onClick={prevPage} disabled={currentPage === 1}>
+        <button
+           className={!(currentPage === 1)
+            ? styles.button : styles.buttonDisable}
+          onClick={prevPage}
+          disabled={currentPage === 1}>
           Previous
         </button>
         <button
+          className={!(currentStudents.length < studentsPerPage)
+            ? styles.button : styles.buttonDisable}
           onClick={nextPage}
           disabled={currentStudents.length < studentsPerPage}
         >

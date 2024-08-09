@@ -100,30 +100,7 @@ class Students(db.Model):
         db.session.commit()
 
         return new_student.id
-    
-    @classmethod
-    def apply_filters(cls, query_params):
-        filters = []
-
-        email_str = query_params.get('email')
-        if email_str:
-            filters.append(cls.email.like(f"%{email_str}%"))
-
-        firstname_str = query_params.get('firstname')
-        lastname_str = query_params.get('lastname')
-        if firstname_str and lastname_str:
-            filters.append(and_(
-                cls.firstname.like(f"%{firstname_str}%"),
-                cls.lastname.like(f"%{lastname_str}%")
-            ))
-
-        return filters
-
-class StudentsSchema(ma.SQLAlchemyAutoSchema):
-    #stu_comment = db.Column(db.String(255))
-    start_time = db.Column(db.DateTime,nullable=True)
-    last_modified_time = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
-    
+   
 class StudentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Students
@@ -211,8 +188,8 @@ class ApplicationSchema(ma.SQLAlchemyAutoSchema):
 programme_schema = ProgrammeSchema()
 programmes_schema = ProgrammeSchema(many=True)
 
-student_schema = StudentsSchema()
-students_schema = StudentsSchema(many=True)
+student_schema = StudentSchema()
+students_schema = StudentSchema(many=True)
 
 application_schema = ApplicationSchema()
 applications_schema = ApplicationSchema(many=True)

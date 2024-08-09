@@ -1,102 +1,160 @@
 
 .container {
-    width: 90%;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 5rem;
-    box-sizing: border-box;
-    unicode-bidi: isolate;
-  }
+  width: 95%;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 5rem;
+  box-sizing: border-box; 
+  unicode-bidi: isolate;
+  margin-bottom: 40px;
+}
 
-  .search_form{
-    margin-bottom: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
 
-  .search_form input {
-    flex: 1;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+.input,
+.textarea {
+  width: 95%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
 
-  .searchsearch_form button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+.input:focus,
+.textarea:focus {
+  border-color: #0070f3;
+  outline: none;
+} 
 
-  .btn {
-    display: inline-block;
-    background-color: #333333;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
+/* Form container */
+.form {
+  display: flex;
+  flex-direction: column;
+}
 
-  .btn:hover {
-    background-color: gray;
-  }
+/* Row container */
+.row {
+  display: flex;
+  gap: 20px; /* Adjust the gap between columns as needed */
+  margin-bottom: 20px; /* Add margin between rows */
+}
+
+/* Form group styling */
+.formGroup {
+  flex: 1; /* Makes the input fields take up equal space */
+}
+
+/* Submit button styling */
+.submitButton {
+  margin-top: 20px;
+  padding: 20px;
+}
 
 
-  /* .students_table{}
-   */
+.search_form{
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
 
-   table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+.search_form input {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-  th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
+.searchsearch_form button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  th {
-    background-color: var(--secondary-color);
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-  }
+.button {
+  display: inline-block;
+  background-color: #333333;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
 
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
+.buttonDisable {
+  display: inline-block;
+  background-color: #ccc9c9;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-  }
+.btn:hover {
+  background-color: gray;
+}
 
-  .pagination button {
-    margin: 0 10rem;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
 
-  .pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+/* .students_table{}
+  */
+
+  table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: var(--secondary-color);
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.paginationButton {
+  margin: 0 10rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.paginationButtonDisabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -5,9 +5,6 @@ from app import db
 from .models import Programme, programme_schema, programmes_schema, Application, Students, student_schema, students_schema, EmergencyContact
 from datetime import datetime
 import json
-import pandas as pd
-import io
-import xlsxwriter
 
 mod = Blueprint('programmes', __name__)
 
@@ -164,7 +161,6 @@ def save_student():
     data = request.get_json()
     if not data:
         return make_response(jsonify({'message': "Invalid request body"}), 400)
-
     formId = data.get("formId")
     class_group_id = ''
     from app.form.models import Form
@@ -172,15 +168,6 @@ def save_student():
     if form:
        class_group_id = form.class_group_id
        print(class_group_id)
-
-    required_fields = ['lastname', 'firstname', 'phone_number', 'email']
-    missing_fields = [field for field in required_fields if field not in data]
-    if missing_fields:
-        return make_response(jsonify({'message': f"Missing {', '.join(missing_fields)}"}), 400)
-    email = data.get('email')
-    lastname = data.get('lastname')
-    firstname = data.get('firstname')
-    check_student_exist(data, class_group_id, email, lastname, firstname)
 
     required_fields = ['lastname', 'firstname', 'phone_number', 'email']
     missing_fields = [field for field in required_fields if field not in data]
@@ -223,40 +210,6 @@ def check_student_exist(data, class_group_id, email, lastname, firstname):
 def create_student(data):
     student_model = Students()
     new_student_id = student_model.create_student(data)
-    return make_response(jsonify({}),200)
-
-def check_student_exist(data, class_group_id, email, lastname, firstname):
-    filters = []
-    filters.append(Students.email == email)
-    filters.append(Students.lastname == lastname)
-    filters.append(Students.firstname == firstname)  
-    student_id_query = Students.query.filter(*filters)
-    students = student_id_query.all()
-    student_id = [student.id for student in students]
-    print(student_id[0])
-    if student_id:
-        application_filters = []
-        Application.query.filter_by(class_group_id=id).first()
-        application_filters.append(Application.class_group_id == class_group_id)
-        application_query = Application.query.filter(*application_filters)
-        applications = application_query.all()
-        if applications:
-            current_application_id = [application.id for application in applications]
-            return f"Already applied with {current_application_id}"
-        else: 
-            create_application(data, student_id, class_group_id)
-            return "current student apply"
-    else:
-        new_student_id = create_student(data)
-        new_pplication_id = create_application(data, new_student_id, class_group_id)
-        return f"New apply id - {new_pplication_id}"
-
-
-def create_student(data):
-    student_model = Students()
-    new_student_id = student_model.create_student(data)
-    print(new_student_id)
-    return new_student_id
 
 def create_application(data, student_id, class_group_id):
     application_model = Application()
@@ -330,36 +283,3 @@ def getApplicationDetails():
             })
 
     return jsonify(output)
-
-@mod.route('/export', methods=['GET'])
-def export_data():
-    try:
-        # Query the database
-        results = db.session.query(
-            Students.firstname,
-            Students.lastname,
-            Students.phone_number,
-            Students.email,
-            Programme.class_group_id,
-            Programme.class_name_eng,
-            Application.is_paid
-        ).join(Application, Students.id == Application.student_id
-        ).join(Programme, Programme.class_group_id == Application.class_group_id
-        ).all()
-
-        if len(results) > 0:
-        # Convert the results to a DataFrame
-            df = pd.DataFrame(results, columns=[
-                'First Name', 'Last Name', 'Phone Number', 'Email',
-                'Class Group ID', 'Class Name', 'Is Paid'
-            ])
-            df['output'] = df['firstname'] + " " + df['lastname'] + "/" + df['class_group_id'] + "/" + df['phone_number'] + "/" + df['email']
-
-            # Save the DataFrame to an Excel file
-            excel_filename = 'students_export.xlsx'
-            df.to_excel(excel_filename, index=False)
-
-            return jsonify({'message': f'Exported data to {excel_filename}'}), 200
-
-    except Exception as e:
-        return make_response(jsonify({'error': str(e)}), 500)

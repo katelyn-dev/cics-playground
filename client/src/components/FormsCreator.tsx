@@ -156,11 +156,10 @@ const Forms: React.FC = () => {
       const templateJson = templateResponse.data.form_json
       const newForm = templateToProgrammePayload(templateJson, selectedProgrammeData.selectedProgramme!)
       const saveFormUrl = process.env.REACT_APP_BASE_URL + 'createForm'
-      const saveFormRequest = toSaveFormRequest(newForm)
+      const saveFormRequest = toSaveFormRequest(newForm, classId!)
       const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
       const formId = formResponse.data.form_id
       const createdFormUrl = window.location.host + "/form/" + formId
-      debugger
       setPopupUrl(createdFormUrl); // Set the URL for the popup
       setIsPopupOpen(true); // Open the popup
     }

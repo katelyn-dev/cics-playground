@@ -18,7 +18,7 @@ interface FormResponse{
 
 export const getCreatedFormJson = async (id: string): Promise<any> => {
   console.log(`id: ${id}`)
-  id ="New_00002"
+  // id ="New_00002"
   try {
     const requestUrl = process.env.REACT_APP_BASE_URL + "getFormByFormId?id=" + id
     console.log(`requesturl: ${requestUrl}`)
@@ -29,7 +29,7 @@ export const getCreatedFormJson = async (id: string): Promise<any> => {
     return formJson
   } catch (error) {
     console.log(`error`)
-    throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
+    throw new Error(error instanceof Error ? error.message : "An unknown error occurred");
   }
 };
 

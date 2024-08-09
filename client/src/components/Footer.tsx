@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
   return (
 
       <footer className={styles.footer}>
-        <p>2024 Hong Kong Canadians Hackathon
+      <sub style={{ fontFamily: "sans-serif",  font: "bold"}} >2024 Hong Kong Canadians Hackathon
           <br />
-          <a >Team 3</a></p>
+          <a >Group 3</a></sub>
       </footer>
 
   )

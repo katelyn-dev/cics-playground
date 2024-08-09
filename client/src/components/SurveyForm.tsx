@@ -71,7 +71,7 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
     survey.locale = locale;
   }
 
-  survey.onComplete.add(async (sender, options) => {
+survey.onComplete.add(async (sender, optipons) => {
     console.log(JSON.stringify(sender.data, null, 3));
     const request = { "formId":id, ...sender.data }
     //save student and application

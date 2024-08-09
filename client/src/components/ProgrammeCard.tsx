@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from './Card'; // Import the Card component
-import styles from '../styles/Forms.module.css'; // Adjust the import path as necessary
+import styles from '../styles/Form.module.css'; // Adjust the import path as necessary
 
 interface Programme {
   class_name_eng: string;

@@ -15,6 +15,7 @@ import Forms from "./components/FormsCreator";
 import Footer from "./components/Footer";
 import QRCodePage from "./pages/QRCodePage";
 import DashboardPage from "./pages/DashboardPage";
+import StudentsListPage from "./pages/StudentsListPage";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -34,6 +35,7 @@ const App: React.FC = () => {
         <Route path="/form-editor/:id" element={<SurveyFormPage />} />
         <Route path="/qr-code" element={<QRCodePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/StudentsListPage" element={<StudentsListPage />} />
       </Routes>
       <Footer />
     </div>

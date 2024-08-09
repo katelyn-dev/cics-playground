@@ -16,14 +16,16 @@ interface FormResponse{
 //   }
 // };
 
-export const getCreatedFormJson = async (id: string): Promise<string> => {
-  console.log(id)
+export const getCreatedFormJson = async (id: string): Promise<any> => {
+  console.log(`id: ${id}`)
+  id ="New_00002"
   try {
     const requestUrl = process.env.REACT_APP_BASE_URL + "getFormByFormId?id=" + id
+    console.log(`requesturl: ${requestUrl}`)
     const response = await axios.get<any>(requestUrl)
     const data: FormResponse = response.data; 
-    const formJson = data.form_json;
-    // console.log(formJson)
+    const formJson = JSON.parse(data.form_json);
+    console.log(formJson)
     return formJson
   } catch (error) {
     console.log(`error`)

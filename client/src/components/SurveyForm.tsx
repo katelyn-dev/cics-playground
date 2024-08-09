@@ -37,7 +37,7 @@ interface SurveyFormProps {
 
 const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
   console.log(`number: ${id}`)
-  const { data, error, isLoading } = useQuery<Object, Error>(
+  const { data, error, isLoading } = useQuery<any, Error>(
     ["getCreatedFormJson", id], // Include id in the query key
     () => getCreatedFormJson(id) // Pass id via the closure
   );

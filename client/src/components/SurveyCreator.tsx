@@ -15,7 +15,7 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
   console.log(`number: ${id}`)
   const containerRef = useRef<HTMLDivElement | null>(null);
   const creatorRef = useRef<SurveyCreator | null>(null);
-  const { data, error, isLoading } = useQuery<string, Error>(
+  const { data, error, isLoading } = useQuery<any, Error>(
     ["getCreatedFormJson", id], // Include id in the query key
     () => getCreatedFormJson(id) // Pass id via the closure
   );
@@ -196,7 +196,7 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
     creatorRef.current?.onSurveyInstanceCreated.add(function (sender, options) {
       console.log("Survey instance created")
       const spans = document.querySelectorAll('span');
-      JSON.parse(data)?.pages.forEach((page: any) => {
+      data?.pages.forEach((page: any) => {
         page.elements.forEach((element: any) => {
           console.log("called")
           if (element?.isLocked) {

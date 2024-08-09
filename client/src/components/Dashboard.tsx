@@ -35,7 +35,6 @@ const Dashboard = () => {
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalForms, setTotalForms] = useState(0);
-
   const [selectedProgrammeData, setSelectedProgrammeData] =
     useState<SelectedProgrammeData>({
       searchWord: "",
@@ -83,11 +82,11 @@ const Dashboard = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await searchStudents();
+    await searchCourse();
     // console.log(timeslot.startDate);
   };
 
-  const searchStudents = async () => {
+  const searchCourse = async () => {
     const { startDate, endDate } = timeslot;
     const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}/searchProgramme?startDate=${startDate}&endDate=${endDate}`;
     try {
@@ -107,6 +106,11 @@ const Dashboard = () => {
       }));
     }
   };
+
+  const downloadResults = async () => {
+    console.log(selectedProgrammeData)
+    await searchCourse();
+  }
 
   const renderDashboard = () => {
     return (
@@ -152,7 +156,7 @@ const Dashboard = () => {
                 onChange={handleChange}
                 className={styles.search_input}
               />
-              <button className={styles.btn} onClick={() => searchStudents()}>
+              <button className={styles.btn} onClick={() => searchCourse()}>
                 Search
               </button>
             </div>
@@ -161,9 +165,9 @@ const Dashboard = () => {
             <button className={styles.btn} onClick={() => downloadResults()}>
               Export Report
             </button>
-            <a href="{{url_for({excel_filename})}}" download>
+            {/* <a href="{{url_for({excel_filename})}}" download>
               Download
-            </a>
+            </a> */}
           </div>
 
           <table className={styles.course_list}>

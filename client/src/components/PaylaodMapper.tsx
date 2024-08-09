@@ -42,10 +42,11 @@ export const templateToProgrammePayload = (json: string, data: DisplayProgrammeD
   return json
 }
 
-export const toSaveFormRequest = (newForm: string) => {
+export const toSaveFormRequest = (newForm: string, classId: string) => {
   return {
     "form_prefix": "CL",
-    "form_json": newForm
+    "form_json": newForm, 
+    "class_group_id" : classId
   }
 }
 

@@ -36,6 +36,7 @@ class Form(db.Model):
             form_id=new_form_id,
             form_json=str(data.get('form_json')),
             is_active = True,
+            class_group_id=data.get('class_group_id'),
             created_by=data.get('created_by'),
             last_updated_by=data.get('last_updated_by'),
             start_time=data.get('start_time')

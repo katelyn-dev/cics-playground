@@ -7,12 +7,12 @@ import cicsLogo from '../static/image/cics-logo.png';
 interface HeaderProps {
   children?: React.ReactNode;
 }
-const Header: React.FC<HeaderProps> = ({children}) => {
+const Header: React.FC<HeaderProps> = ({ children }) => {
   console.log("called header")
   return (
     <header className={styles.header}>
-       <img src={cicsLogo} alt="CICS Logo" style={{ width: '110px', height: 'auto' }} />
       <nav>
+        <img src={cicsLogo} alt="CICS Logo" style={{ width: '110px', height: 'auto' }} />
         <ul className={styles.navList}>
           <li className={styles.navItem}>
             <NavLink to="/" className={styles.navLink}>

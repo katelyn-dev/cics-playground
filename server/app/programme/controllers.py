@@ -145,6 +145,7 @@ def saveProgramme():
                          class_name_eng=data.get('class_name_eng'),
                          class_name_zhcn=data.get('class_name_zhcn'),
                          class_name_zhhk=data.get('class_name_zhhk'),
+                         target_audience=data.get('target_audience'),
                          has_subclass = data.get('has_subclass'),
                          class_fee = data.get('class_fee'),
                          subclass_group_id = data.get('subclass_group_id'),
@@ -191,8 +192,8 @@ def check_student_exist(data, class_group_id, email, lastname, firstname):
     filters.append(Students.firstname == firstname)  
     student_id_query = Students.query.filter(*filters)
     students = student_id_query.all()
-    student_id = [student.id for student in students]
-    if student_id:
+    if students:
+        student_id = [student.id for student in students]
         n_student_id = student_id[0]
         applications = db.session.query(Application).filter(Application.student_id == n_student_id).all()
         if applications:
@@ -209,12 +210,13 @@ def check_student_exist(data, class_group_id, email, lastname, firstname):
         new_student_id = create_student(data)
         new_application_id = create_application(data, new_student_id, class_group_id)[0]
         return  { "id" : new_application_id.id, 
-                 "status": "new stutend appled", 
+                 "status": "new stutend applied", 
                  "class_group_id" : class_group_id}
 
 def create_student(data):
     student_model = Students()
     new_student_id = student_model.create_student(data)
+    return new_student_id
 
 def create_application(data, student_id, class_group_id):
     application_model = Application()

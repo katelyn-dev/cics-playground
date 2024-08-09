@@ -19,18 +19,11 @@ interface SubClass {
   zhcnClassName: string;
 }
 
-enum TargetAudience {
-  junior = "junior",
-  teens = "teens",
-  adult = "adult",
-  senior = "senior",
-}
-
 export interface ProgrammeData {
   engClassName: string;
   zhhkClassName: string;
   zhcnClassName: string;
-  targetAudience: TargetAudience | undefined;
+  targetAudience: string;
   fee: string;
   startDate: string;
   endDate: string;
@@ -45,7 +38,7 @@ const initialProgrammeData = {
   engClassName: '',
   zhhkClassName: '',
   zhcnClassName: '',
-  targetAudience: undefined,
+  targetAudience: '',
   fee: '',
   startDate: '',
   endDate: '',
@@ -84,13 +77,14 @@ const Programme: React.FC = () => {
   const handleTargetAudienceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target
     if (name === 'targetAudience') {
-      const targetAudienceEnum = (Object.keys(TargetAudience) as (keyof typeof TargetAudience)[]).find(key => TargetAudience[key] === value);
-      targetAudienceEnum && setProgrammeData(prevState => ({
+      setProgrammeData(prevState => ({
         ...prevState,
-        targetAudience: TargetAudience[targetAudienceEnum]
+        targetAudience: value
       }))
     }
   };
+
+  console.log(programmeData.targetAudience)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -301,10 +295,6 @@ const Programme: React.FC = () => {
       const status = response.status
       if (status === 201 || status === 200) {
         window.alert('Created!');
-        const init = {
-          ...initialProgrammeData,
-          targetAudience: ''
-        }
         setProgrammeData(initialProgrammeData)
       }
     } catch (error) {

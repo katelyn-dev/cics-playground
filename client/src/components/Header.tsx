@@ -38,6 +38,9 @@ const Header: React.FC<HeaderProps> = ({children}) => {
             <NavLink to="/dashboard" className={styles.navLink}>
               Dashboard
             </NavLink>
+            <NavLink to="/studentslist" className={styles.navLink}>
+            Search Students
+            </NavLink>
           </li>
           {/* Add more links as needed */}
         </ul>

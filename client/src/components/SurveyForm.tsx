@@ -80,7 +80,7 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
     const applicationId = submitResponse.data.id
     const classGroupId = submitResponse.data.class_group_id
     //send confirmation email
-    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?id="+classGroupId
+    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?id="+ classGroupId
     const response = await axios.get<any[]>(searchProgrammeUrl);
     const programmeDetails: ProgrammeDetail[] = response.data
     const paymentLink = process.env.REACT_APP_BASE_URL + "payment.html?applicationId=" + applicationId

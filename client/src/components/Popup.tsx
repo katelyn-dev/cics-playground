@@ -8,9 +8,10 @@ interface PopupProps {
   title: string;
   content: string;
   url: string; // Add url prop
+  formId: string;
 }
 
-const Popup: React.FC<PopupProps> = ({ isOpen, onClose, title, content, url }) => {
+const Popup: React.FC<PopupProps> = ({ isOpen, onClose, title, content, url , formId}) => {
   if (!isOpen) return null;
 
   if (url.startsWith('localhost')) {
@@ -23,6 +24,7 @@ const Popup: React.FC<PopupProps> = ({ isOpen, onClose, title, content, url }) =
         <button className={styles.closeButton} onClick={onClose}>×</button>
         <h2>{title}</h2>
         <p>{content}</p>
+        <div style={{ fontWeight: "bold"}}>Your Form ID: {formId}</div>
         <div className={styles.qrCodeContainer}>
           <QRCode value={url} size={128} /> {/* Render the QR code */}
         </div>

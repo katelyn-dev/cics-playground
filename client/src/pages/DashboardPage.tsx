@@ -1,7 +1,6 @@
 import React from "react"
 import Dashboard from '../components/Dashboard';
 import Header from '../components/Header';
-import Footer from "../components/Footer";
 
 
 const DashboardPage = () => {
@@ -11,7 +10,6 @@ const DashboardPage = () => {
       <main>
         <Dashboard />
       </main>
-
     </div>
   )
 };

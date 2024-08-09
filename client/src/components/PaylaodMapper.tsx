@@ -14,7 +14,6 @@ export const toClassesPayload = (data: ProgrammeData) => {
     })
     extraAttributesName.push("All Time Slot", "Do not need")
   }
-
   const builder = {
     class_name_eng: data.engClassName,
     class_name_zhcn: data.zhcnClassName,

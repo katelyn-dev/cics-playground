@@ -1,21 +1,17 @@
-/* Header.module.css */
 .header {
     background: #333;
     color: white;
     padding: 1rem;
     width: 100%;
     position: fixed;
+    top: 0;
     z-index: 1000; 
-    text-align: center;
 }
-
-
-/* .logo {
-    position: absolute; /* Remove logo from the flexbox alignment */
-    /* left: 20px;  */
-/* }  */
-
 .header img {
+    /* float: left;
+    width: 100px;
+    height: 100px; */
+    /* background: #555; */
     position: absolute;
     top: 0.4rem;
     left: 20px;     
@@ -40,7 +36,6 @@
 
 .navItem {
     display: flex;
-    justify-content: center;
 }
 
 .navLink {

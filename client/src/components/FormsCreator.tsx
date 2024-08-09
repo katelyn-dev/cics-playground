@@ -44,6 +44,7 @@ const Forms: React.FC = () => {
   const [searchResults, setSearchResults] = useState<DisplayProgrammeData[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupUrl, setPopupUrl] = useState('');
+  const [formId, setFormId] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -60,8 +61,16 @@ const Forms: React.FC = () => {
     searchRelatedProgrammes(selectedProgrammeData);
   }, []);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent Enter key from triggering button
+    }
+  };
+
   const searchRelatedProgrammes = async (data: SelectedProgrammeData) => {
-    const selectedProgramme = data.searchWord ? "name=" + data.searchWord : ""
+    const encodedSearchTerm = encodeURIComponent(data.searchWord);
+    console.log(`Encoded URL: searchProgramme?name=${encodedSearchTerm}`);
+    const selectedProgramme = data.searchWord ? "name=" + encodedSearchTerm : ""
     const expectedStartDate = data.expectedStartDate ? "startDate=" + data.expectedStartDate : ""
     const expectedEndDate = data.expectedEndDate ? "nendDateame=" + data.expectedEndDate : ""
     const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?"
@@ -81,6 +90,7 @@ const Forms: React.FC = () => {
 
   // Handle search input change
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault()
     const value = event.target.value;
     setSearchTerm(value);
     setSelectedProgrammeData(prevState => ({
@@ -91,6 +101,12 @@ const Forms: React.FC = () => {
     const results = searchResults.filter(option =>
       option.class_name_eng.toLowerCase().includes(value.toLowerCase())
     );
+    if (results.length == 1) {
+      setSelectedProgrammeData(prevState => ({
+        ...prevState,
+        selectedProgramme: results[0]
+      }))
+    }
     setFilteredOptions(results);
   };
 
@@ -137,18 +153,19 @@ const Forms: React.FC = () => {
 
     const classId = selectedProgrammeData.selectedProgramme?.class_group_id
     const formUrl = process.env.REACT_APP_BASE_URL + "getFormIdByClassId?id=" + classId
-    console.log(classId)
-    console.log(formUrl)
-    debugger
+    console.log("formCreators classId=" + classId)
+    console.log("formCreators formUrl=" + formUrl)
     try {
       const response = await axios.get<FormResponse>(formUrl);
+      console.log("formCreators response=" + response)
       const status = response.status
       if (status === 200) {
         const formId = response.data.form_id
         const createdFormUrl = process.env.REACT_APP_HOST + "/form/" + formId
+        setFormId(formId);
         setPopupUrl(createdFormUrl); // Set the URL for the popup
         setIsPopupOpen(true); // Open the popup
-      } 
+      }
     } catch (error) {
       const targetAudience = selectedProgrammeData.selectedProgramme?.target_audience
       const templateUrl = process.env.REACT_APP_BASE_URL + 'getTemplate?targetAudience=' + targetAudience
@@ -160,6 +177,7 @@ const Forms: React.FC = () => {
       const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
       const formId = formResponse.data.form_id
       const createdFormUrl = window.location.host + "/form/" + formId
+      setFormId(formId);
       setPopupUrl(createdFormUrl); // Set the URL for the popup
       setIsPopupOpen(true); // Open the popup
     }
@@ -256,6 +274,7 @@ const Forms: React.FC = () => {
                       type="submit" >Search</SubmitButton> */}
                     <button
                       type="button"
+                      onKeyDown={handleKeyDown}
                       className={styles.submitButton}
                       onClick={handleSearch}
                     >
@@ -278,7 +297,7 @@ const Forms: React.FC = () => {
                           {...programme}
                           onSelect={(id) => {
                             const selected = selectedProgrammeData.displayedProgrammes.find(p => p.class_group_id === id);
-                            if (selected) {   
+                            if (selected) {
                               setSelectedProgrammeData(prevState => ({
                                 ...prevState,
                                 selectedProgramme: selected
@@ -301,6 +320,7 @@ const Forms: React.FC = () => {
               title="Here you go!"
               content="Here is your QR code and URL"
               url={popupUrl}
+              formId={formId}
             />
           </div>
         </div>

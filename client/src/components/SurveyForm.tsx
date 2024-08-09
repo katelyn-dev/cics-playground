@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import { Survey } from "survey-react-ui";
-import {Model, Question, StylesManager, SurveyModel} from "survey-core";
+import {Model, StylesManager, SurveyModel} from "survey-core";
 import 'survey-core/defaultV2.min.css';
 import { useQuery } from "react-query";
 import { getCreatedFormJson } from "../api/dataService";
@@ -8,10 +8,7 @@ import cicsLogo from '../static/image/cics-logo.png'
 import { Helper } from "./Helper";
 import '../styles/SurveyForm.module.css'
 import axios from "axios";
-import { DisplayProgrammeData } from "./FormsCreator";
-import { ProgrammeData } from "./ProgrammeCreator";
 import { toEmailRequest } from "./PaylaodMapper";
-import {textAlign} from "html2canvas/dist/types/css/property-descriptors/text-align";
 
 // Initialize SurveyJS styles
 StylesManager.applyTheme("defaultV2");
@@ -35,10 +32,6 @@ interface SubmitResponse {
 interface SurveyFormProps {
   id: string;
 }
-
-// interface SurveyFormProps {
-//   id: string;
-// }
 
 const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
   console.log(`number: ${id}`)

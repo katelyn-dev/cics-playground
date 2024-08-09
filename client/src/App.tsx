@@ -35,7 +35,7 @@ const App: React.FC = () => {
         <Route path="/form-editor/:id" element={<SurveyFormPage />} />
         <Route path="/qr-code" element={<QRCodePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/StudentsListPage" element={<StudentsListPage />} />
+        <Route path="/studentslist" element={<StudentsListPage />} />
       </Routes>
       <Footer />
     </div>

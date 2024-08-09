@@ -9,6 +9,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.styles import PatternFill
 import pandas as pd
 from io import BytesIO
+import os
 
 mod = Blueprint('programmes', __name__)
 
@@ -354,3 +355,19 @@ def export():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@mod.route('/dashboard', methods=['GET'])
+def get_dashboard_stats():
+    try:
+        total_students = Students.query.count()
+        total_courses = Programme.query.count()
+        total_forms = Application.query.count()
+        
+        return jsonify({
+            'totalStudents': total_students,
+            'totalCourses': total_courses,
+            'totalForms': total_forms
+        })
+    except Exception as e:
+        return make_response(jsonify({'error': str(e)}), 500)
+    

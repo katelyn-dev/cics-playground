@@ -32,4 +32,4 @@ export default function SurveyCreatorWidget(props: { json?: Object, options?: IC
       <SurveyCreatorComponent creator={creator} />
     </div>
   );
-}
+} 

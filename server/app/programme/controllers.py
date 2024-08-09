@@ -1,10 +1,14 @@
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, send_file
 from sqlalchemy import cast, func, not_, and_
-
 from app import db
 from .models import Programme, programme_schema, programmes_schema, Application, Students, student_schema, students_schema, EmergencyContact
 from datetime import datetime
 import json
+import openpyxl
+from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.styles import PatternFill
+import pandas as pd
+from io import BytesIO
 
 mod = Blueprint('programmes', __name__)
 
@@ -283,3 +287,70 @@ def getApplicationDetails():
             })
 
     return jsonify(output)
+
+
+@mod.route('/export', methods=['GET'])
+def export():
+    try:
+        response = getApplicationDetails()
+        data = response.get_json()
+
+        export_data = []
+        for item in data:
+            programme = item.get('programme', {})
+            student = item.get('student', {})
+            application = item.get('application', {})
+            
+            # Transform 'is_paid' value
+            is_paid_value = application.get('is_paid', '')
+            if is_paid_value == '1':
+                is_paid_value = "Yes"
+            else:
+                is_paid_value = "No"
+
+            # Create the output field: Firstname Lastname/Class_group_id/Phone_number/Email
+            output_field = f"{student.get('firstname', '')} {student.get('lastname', '')}/" \
+                           f"{application.get('class_group_id', '')}/" \
+                           f"{student.get('phone_number', '')}/" \
+                           f"{student.get('email', '')}"
+
+            export_data.append({
+                'Class Name': programme.get('class_name_eng', ''),
+                'Age Group': programme.get('target_audience', ''),
+                'Class Start Date': datetime.strptime(programme.get('class_start', ''), "%a, %d %b %Y %H:%M:%S %Z").strftime('%Y-%m-%d') if programme.get('class_start', '') else '',
+                'Class End Date': datetime.strptime(programme.get('class_end', ''), "%a, %d %b %Y %H:%M:%S %Z").strftime('%Y-%m-%d') if programme.get('class_end', '') else '',
+                'Is Paid?': is_paid_value,
+                'output': output_field
+            })
+
+        df = pd.DataFrame(export_data)
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Application Details"
+
+        # Append DataFrame rows to the worksheet
+        for row in dataframe_to_rows(df, index=False, header=True):
+            ws.append(row)
+
+        # Define the yellow fill for highlighting and highluighed if is_paid = Yes
+        yellow_fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        for i, row in enumerate(ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=1, max_col=ws.max_column), start=2):
+            is_paid = ws[f'E{i}'].value
+            if is_paid == 'Yes':
+                for cell in row:
+                    cell.fill = yellow_fill
+
+        for column in ws.columns:
+            max_length = max(len(str(cell.value)) for cell in column)
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column[0].column_letter].width = adjusted_width
+
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+
+        filename = f"application_details_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        return send_file(output, download_name=filename, as_attachment=True)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

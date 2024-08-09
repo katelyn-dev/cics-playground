@@ -35,6 +35,10 @@ interface SurveyFormProps {
   id: string;
 }
 
+// interface SurveyFormProps {
+//   id: string;
+// }
+
 const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
   console.log(`number: ${id}`)
   const { data, error, isLoading } = useQuery<any, Error>(
@@ -47,8 +51,6 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
   useEffect(() => { 
     setBgimage(Helper.getRandomBackground())
   }, [])
-  // useEffect(() => {
-  //   if (isLoading || !data) return;
 
   const survey = new Model(data);
   survey.locale = locale

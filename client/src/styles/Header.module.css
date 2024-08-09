@@ -5,37 +5,57 @@
     padding: 1rem;
     width: 100%;
     position: fixed;
-    top: 0;
     z-index: 1000; 
+    text-align: center;
 }
 
+
+/* .logo {
+    position: absolute; /* Remove logo from the flexbox alignment */
+    /* left: 20px;  */
+/* }  */
+
 .header img {
+    position: absolute;
+    top: 0.4rem;
+    left: 20px;     
     float: left;
     width: 100px;
     height: 100px;
-    /* background: #555; */
   }
 
 .navList {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center; /* Align items vertically center */
+    justify-content: center; /* Center the content horizontally */
+    position: relative; /* Position relative for logo alignment */
     list-style: none;
     display: flex;
     gap: 1rem;
-    justify-content: center;
+    text-align: center;
     margin: 0;
     padding: 0;
 }
 
 .navItem {
     display: flex;
+    justify-content: center;
 }
 
 .navLink {
     color: white;
     text-decoration: none;
     padding: 0.5rem 1rem;
-    transition: background-color 0.3s;
+    padding: 10px 20px; /* Adjust padding as needed */
+    text-decoration: none; /* Remove underline from links */
+    color: white; /* Text color */
+    background-color: #333; /* Default background color */
+    border-radius: 5px; /* Default border radius */
+    transition: background-color 0.3s, border-radius 0.3s; /* Smooth transition */
 }
 
 .navLink:hover {
     background-color: #444;
+    border-radius: 20px;
 }

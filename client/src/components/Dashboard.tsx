@@ -82,9 +82,20 @@ const Dashboard = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log(e.currentTarget)
     await searchCourse();
-    // console.log(timeslot.startDate);
   };
+
+  const downloadResults = () => {
+    const filename = 'export'
+    const url = process.env.REACT_APP_BASE_URL + "export";
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename; 
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 
   const searchCourse = async () => {
     const { startDate, endDate } = timeslot;
@@ -106,11 +117,6 @@ const Dashboard = () => {
       }));
     }
   };
-
-  const downloadResults = async () => {
-    console.log(selectedProgrammeData)
-    await searchCourse();
-  }
 
   const renderDashboard = () => {
     return (
@@ -159,23 +165,24 @@ const Dashboard = () => {
               <button className={styles.btn} onClick={() => searchCourse()}>
                 Search
               </button>
+
+              <button
+                type="button"
+                id="exportReport"
+                name="exportReport"
+                className={styles.btn} onClick={downloadResults}>
+                Export Report
+              </button>
+
             </div>
           </form>
-          <div>
-            <button className={styles.btn} onClick={() => downloadResults()}>
-              Export Report
-            </button>
-            {/* <a href="{{url_for({excel_filename})}}" download>
-              Download
-            </a> */}
-          </div>
 
           <table className={styles.course_list}>
             <thead>
               <tr>
                 <th>Course ID</th>
                 <th>Course Name</th>
-                <th>Detail</th>
+                <th>Start Date</th>
               </tr>
             </thead>
             <tbody className={styles.course_list_body}>

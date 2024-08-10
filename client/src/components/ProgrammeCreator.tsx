@@ -288,7 +288,7 @@ const Programme: React.FC = () => {
     validateTimeSlots(programmeData.timeSlots)
     validateSubClass(programmeData.subClasses)
     // to backend
-    const saveProgrammeUrl = process.env.REACT_APP_BASE_URL + 'saveProgramme'
+    const saveProgrammeUrl = process.env.REACT_APP_BASE_URL + '/saveProgramme'
     try {
       const request = toClassesPayload(programmeData)
       const response = await axios.post<any[]>(saveProgrammeUrl, request, Helper.postRequestHeader);

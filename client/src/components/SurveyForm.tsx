@@ -101,19 +101,19 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
         console.log(JSON.stringify(sender.data, null, 3));
         const request = {"formId": id, ...sender.data}
         //save student and application
-        const submitUrl = process.env.REACT_APP_BASE_URL + "saveStudent"
+        const submitUrl = process.env.REACT_APP_BASE_URL + "/saveStudent"
         const submitResponse = await axios.post<SubmitResponse>(submitUrl, request, Helper.postRequestHeader);
         const applicationId = submitResponse.data.id
         const classGroupId = submitResponse.data.class_group_id
         //send confirmation email
-        const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?id=" + classGroupId
+        const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "/searchProgramme?id=" + classGroupId
         const response = await axios.get<any[]>(searchProgrammeUrl);
         const programmeDetails: ProgrammeDetail[] = response.data
-        const paymentLink = process.env.REACT_APP_BASE_URL + "payment.html?applicationId=" + applicationId
+        const paymentLink = process.env.REACT_APP_BASE_URL + "/payment.html?applicationId=" + applicationId
         const to_email = request.email
         const to_name = request.firstname + ' ' + request.lastname
         const emailRequest = toEmailRequest(to_email, to_name, programmeDetails, paymentLink)
-        const emailUrl = process.env.REACT_APP_BASE_URL + "emailNotification"
+        const emailUrl = process.env.REACT_APP_BASE_URL + "/emailNotification"
         const emailResponse = await axios.post<SubmitResponse>(emailUrl, emailRequest, Helper.postRequestHeader);
         if (emailResponse.status == 200) {
           console.log("email sent")

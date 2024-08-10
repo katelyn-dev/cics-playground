@@ -28,7 +28,7 @@ const StudentsList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = process.env.REACT_APP_BASE_URL + "searchStudent";
+        const url = process.env.REACT_APP_BASE_URL + "/searchStudent";
         const response = await axios.get(url);
         setDisplayedStudents(response.data); // Initially display all students
       } catch (error) {
@@ -54,7 +54,7 @@ const StudentsList = () => {
       const phone_num = searchStudent.phone_number ? "&phone_num=" + searchStudent.phone_number : ""
       const lastname = searchStudent.lastname ? "&lastname=" + searchStudent.lastname : ""
       const firstname = searchStudent.firstname ? "&firstname=" + searchStudent.firstname : ""
-      const url = process.env.REACT_APP_BASE_URL + "searchStudent?"
+      const url = process.env.REACT_APP_BASE_URL + "/searchStudent?"
         + email
         + phone_num
         + lastname

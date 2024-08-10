@@ -39,7 +39,6 @@ const Index = () => {
         }
       })
     } else {
-      console.log("re-auth")
       fetch("http://localhost:8080/auth")
       .then((response) => response.json())
       .then(data => {

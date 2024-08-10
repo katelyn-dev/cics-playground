@@ -5,7 +5,6 @@ import Programme from '../components/ProgrammeCreator';
 import Header from '../components/Header';
 
 const ProgrammePage: React.FC = () => {
-  console.log("called form page")
   return (
     <div>
       <Header />

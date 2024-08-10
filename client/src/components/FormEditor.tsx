@@ -36,7 +36,7 @@ const FormEditor: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     try {
-      const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}getFormByFormId?id=${searchForm.form_id}`
+      const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}/getFormByFormId?id=${searchForm.form_id}`
       const response = await axios.get<any[]>(searchProgrammeUrl);
       const status = response.status
       if (status == 200) {

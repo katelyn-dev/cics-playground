@@ -59,7 +59,7 @@ const Dashboard = () => {
   });
   const fetchData = async () => {
     try {
-      const url = process.env.REACT_APP_BASE_URL + "dashboard";
+      const url = process.env.REACT_APP_BASE_URL + "/dashboard";
       const response = await axios.get(url);
       const { totalStudents, totalCourses, totalForms } = response.data;
       setTotalStudents(totalStudents);
@@ -88,7 +88,7 @@ const Dashboard = () => {
 
   const downloadResults = () => {
     const filename = 'export'
-    const url = process.env.REACT_APP_BASE_URL + "export";
+    const url = process.env.REACT_APP_BASE_URL + "/export";
     const a = document.createElement('a');
     a.href = url;
     a.download = filename; 
@@ -99,7 +99,7 @@ const Dashboard = () => {
 
   const searchCourse = async () => {
     const { startDate, endDate } = timeslot;
-    const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}searchProgramme?startDate=${startDate}&endDate=${endDate}`;
+    const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}/searchProgramme?startDate=${startDate}&endDate=${endDate}`;
     try {
       const response = await axios.get<DisplayProgrammeData[]>(
         searchProgrammeUrl

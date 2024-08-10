@@ -14,7 +14,6 @@ interface SurveyFormProps {
 }
 
 const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
-  console.log(`number: ${id}`)
   const containerRef = useRef<HTMLDivElement | null>(null);
   const creatorRef = useRef<SurveyCreator | null>(null);
   const { data, error, isLoading } = useQuery<string, Error>(
@@ -142,10 +141,9 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
         form_id: form_id,
         form_json: form_json
       })
-      const updateFormUrl = `${process.env.REACT_APP_BASE_URL}updateForm?`
+      const updateFormUrl = `${process.env.REACT_APP_BASE_URL}/updateForm?`
       const response = await axios.post<any[]>(updateFormUrl, request, Helper.postRequestHeader);
       const data = response.data
-      console.log(data)
       alert(JSON.stringify(result))
     }
   })

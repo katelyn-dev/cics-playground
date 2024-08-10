@@ -73,7 +73,7 @@ const Forms: React.FC = () => {
     const selectedProgramme = data.searchWord ? "name=" + encodedSearchTerm : ""
     const expectedStartDate = data.expectedStartDate ? "startDate=" + data.expectedStartDate : ""
     const expectedEndDate = data.expectedEndDate ? "nendDateame=" + data.expectedEndDate : ""
-    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "searchProgramme?"
+    const searchProgrammeUrl = process.env.REACT_APP_BASE_URL + "/searchProgramme?"
       + selectedProgramme + expectedStartDate + expectedEndDate
     try {
       const response = await axios.get<any[]>(searchProgrammeUrl);
@@ -152,7 +152,7 @@ const Forms: React.FC = () => {
     }
 
     const classId = selectedProgrammeData.selectedProgramme?.class_group_id
-    const formUrl = process.env.REACT_APP_BASE_URL + "getFormIdByClassId?id=" + classId
+    const formUrl = process.env.REACT_APP_BASE_URL + "/getFormIdByClassId?id=" + classId
     console.log("formCreators classId=" + classId)
     console.log("formCreators formUrl=" + formUrl)
     try {
@@ -168,11 +168,11 @@ const Forms: React.FC = () => {
       }
     } catch (error) {
       const targetAudience = selectedProgrammeData.selectedProgramme?.target_audience
-      const templateUrl = process.env.REACT_APP_BASE_URL + 'getTemplate?targetAudience=' + targetAudience
+      const templateUrl = process.env.REACT_APP_BASE_URL + '/getTemplate?targetAudience=' + targetAudience
       const templateResponse = await axios.get<TemplateResponse>(templateUrl);
       const templateJson = templateResponse.data.form_json
       const newForm = templateToProgrammePayload(templateJson, selectedProgrammeData.selectedProgramme!)
-      const saveFormUrl = process.env.REACT_APP_BASE_URL + 'createForm'
+      const saveFormUrl = process.env.REACT_APP_BASE_URL + '/createForm'
       const saveFormRequest = toSaveFormRequest(newForm, classId!)
       const formResponse = await axios.post<FormResponse>(saveFormUrl, saveFormRequest, Helper.postRequestHeader);
       const formId = formResponse.data.form_id

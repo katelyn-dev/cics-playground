@@ -132,12 +132,14 @@ const Dashboard = () => {
           <div className={styles.card}>
             <h2>Registered Students</h2>
             <p className={styles.card_words}>{totalStudents}</p>
-            <a className={styles.btn}>View Students</a>
+            <NavLink to="/studentslist" className={styles.btn}>
+              View Students
+            </NavLink>
           </div>
           <div className={styles.card}>
             <h2>Open Form</h2>
             <p className={styles.card_words}>{totalForms}</p>
-            <NavLink to="/form" className={styles.btn}>
+            <NavLink to="/form-editor" className={styles.btn}>
               Manage Form
             </NavLink>
           </div>

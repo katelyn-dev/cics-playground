@@ -9,13 +9,14 @@ db = SQLAlchemy()
 ma = Marshmallow() # for serialization
 
 def create_app():
-    app = Flask(__name__)
+    # app = Flask(__name__)
+    app = Flask(__name__, static_folder='./build', static_url_path='/')
     app.config.from_object(Config)
     app.json.ensure_ascii = False  # convert unicode to chinese
 
     db.init_app(app)
     ma.init_app(app)
-    
+   
     with app.app_context():
         # Import routes here to avoid circular imports
         from app.auth.controllers import mod as auth_module

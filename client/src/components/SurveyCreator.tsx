@@ -142,7 +142,7 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
         form_id: form_id,
         form_json: form_json
       })
-      const updateFormUrl = `${process.env.REACT_APP_BASE_URL}/updateForm?`
+      const updateFormUrl = `${process.env.REACT_APP_BASE_URL}updateForm?`
       const response = await axios.post<any[]>(updateFormUrl, request, Helper.postRequestHeader);
       const data = response.data
       console.log(data)

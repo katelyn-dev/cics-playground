@@ -99,7 +99,7 @@ const Dashboard = () => {
 
   const searchCourse = async () => {
     const { startDate, endDate } = timeslot;
-    const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}/searchProgramme?startDate=${startDate}&endDate=${endDate}`;
+    const searchProgrammeUrl = `${process.env.REACT_APP_BASE_URL}searchProgramme?startDate=${startDate}&endDate=${endDate}`;
     try {
       const response = await axios.get<DisplayProgrammeData[]>(
         searchProgrammeUrl

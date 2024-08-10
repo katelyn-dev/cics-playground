@@ -66,6 +66,9 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ id }) => {
       // Create a new <style> element
       const styleElement = document.createElement("style");
       styleElement.innerHTML = `
+        .sd-question__content {
+          text-align: left !important;
+        }
         .sd-question__title {
           text-align: left !important;
         }

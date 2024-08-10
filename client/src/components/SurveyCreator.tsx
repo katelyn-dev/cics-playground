@@ -160,6 +160,29 @@ const SurveyCreatorRenderComponent: React.FC<SurveyFormProps> = ({ id }) => {
   })
 
   useEffect(() => {
+    if (containerRef.current) {
+      // Create a new <style> element
+      const styleElement = document.createElement("style");
+      styleElement.innerHTML = `
+        .sd-question__content {
+          text-align: left !important;
+        }
+        .sd-question__title {
+          text-align: left !important;
+        }
+      `;
+
+      // Append the <style> element to the document's <head>
+      document.head.appendChild(styleElement);
+
+      // Clean up the <style> element when the component is unmounted
+      return () => {
+        document.head.removeChild(styleElement);
+      };
+    }
+  }, [containerRef]);
+
+  useEffect(() => {
 
     if(!containerRef.current) return;
 
